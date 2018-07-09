@@ -2,6 +2,8 @@
 
 namespace FastRoute;
 
+use function FastRoute\TestFixtures\empty_options_cached;
+
 class RouteCollector
 {
     /** @var RouteParser */
@@ -12,6 +14,8 @@ class RouteCollector
 
     /** @var string */
     protected $currentGroupPrefix;
+
+    protected $currentMiddleware;
 
     /**
      * Constructs a route collector.
@@ -24,6 +28,7 @@ class RouteCollector
         $this->routeParser = $routeParser;
         $this->dataGenerator = $dataGenerator;
         $this->currentGroupPrefix = '';
+        $this->currentMiddleware = [];
     }
 
     /**
@@ -33,15 +38,20 @@ class RouteCollector
      *
      * @param string|string[] $httpMethod
      * @param string $route
-     * @param mixed  $handler
+     * @param mixed $handler
      */
-    public function addRoute($httpMethod, $route, $handler)
+    public function addRoute($httpMethod, $route, $handler, $middleware = [])
     {
         $route = $this->currentGroupPrefix . $route;
+
+        if (!empty($this->currentMiddleware)) {
+            array_unshift($middleware, ...$this->currentMiddleware);
+        }
+
         $routeDatas = $this->routeParser->parse($route);
         foreach ((array) $httpMethod as $method) {
             foreach ($routeDatas as $routeData) {
-                $this->dataGenerator->addRoute($method, $routeData, $handler);
+                $this->dataGenerator->addRoute($method, $routeData, $handler, $middleware);
             }
         }
     }
@@ -53,12 +63,18 @@ class RouteCollector
      *
      * @param string $prefix
      * @param callable $callback
+     * @param array $middleware
      */
-    public function addGroup($prefix, callable $callback)
+    public function addGroup($prefix, callable $callback, $middleware = [])
     {
         $previousGroupPrefix = $this->currentGroupPrefix;
+        $previousMiddleware = $this->currentMiddleware;
         $this->currentGroupPrefix = $previousGroupPrefix . $prefix;
+        if (!empty($middleware)) {
+            array_unshift($this->currentMiddleware, ...$middleware);
+        }
         $callback($this);
+        $this->currentMiddleware = $previousMiddleware;
         $this->currentGroupPrefix = $previousGroupPrefix;
     }
 

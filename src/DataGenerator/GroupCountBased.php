@@ -14,12 +14,16 @@ class GroupCountBased extends RegexBasedAbstract
         $routeMap = [];
         $regexes = [];
         $numGroups = 0;
+        /**
+         * @var string $regex
+         * @var \FastRoute\Route $route
+         */
         foreach ($regexToRoutesMap as $regex => $route) {
             $numVariables = count($route->variables);
             $numGroups = max($numGroups, $numVariables);
 
             $regexes[] = $regex . str_repeat('()', $numGroups - $numVariables);
-            $routeMap[$numGroups + 1] = [$route->handler, $route->variables];
+            $routeMap[$numGroups + 1] = [$route->handler, $route->variables, $route->middleware];
 
             ++$numGroups;
         }
