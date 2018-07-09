@@ -39,6 +39,7 @@ class RouteCollector
      * @param string|string[] $httpMethod
      * @param string $route
      * @param mixed $handler
+     * @param array $middleware
      */
     public function addRoute($httpMethod, $route, $handler, $middleware = [])
     {
