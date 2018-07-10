@@ -15,7 +15,7 @@ class RouteCollector
     /** @var string */
     protected $currentGroupPrefix;
 
-    protected $currentMiddleware;
+    protected $currentMiddleware = [];
 
     /**
      * Constructs a route collector.
@@ -72,7 +72,7 @@ class RouteCollector
         $previousMiddleware = $this->currentMiddleware;
         $this->currentGroupPrefix = $previousGroupPrefix . $prefix;
         if (!empty($middleware)) {
-            array_unshift($this->currentMiddleware, ...$middleware);
+            array_push($this->currentMiddleware, ...$middleware);
         }
         $callback($this);
         $this->currentMiddleware = $previousMiddleware;
@@ -81,67 +81,72 @@ class RouteCollector
 
     /**
      * Adds a GET route to the collection
-     * 
+     *
      * This is simply an alias of $this->addRoute('GET', $route, $handler)
      *
      * @param string $route
-     * @param mixed  $handler
+     * @param mixed $handler
+     * @param array $middleware
      */
-    public function get($route, $handler)
+    public function get($route, $handler, $middleware = [])
     {
-        $this->addRoute('GET', $route, $handler);
+        $this->addRoute('GET', $route, $handler, $middleware);
     }
 
     /**
      * Adds a POST route to the collection
-     * 
+     *
      * This is simply an alias of $this->addRoute('POST', $route, $handler)
      *
      * @param string $route
-     * @param mixed  $handler
+     * @param mixed $handler
+     * @param array $middleware
      */
-    public function post($route, $handler)
+    public function post($route, $handler, $middleware = [])
     {
-        $this->addRoute('POST', $route, $handler);
+        $this->addRoute('POST', $route, $handler, $middleware);
     }
 
     /**
      * Adds a PUT route to the collection
-     * 
+     *
      * This is simply an alias of $this->addRoute('PUT', $route, $handler)
      *
      * @param string $route
-     * @param mixed  $handler
+     * @param mixed $handler
+     * @param array $middleware
      */
-    public function put($route, $handler)
+    public function put($route, $handler, $middleware = [])
     {
-        $this->addRoute('PUT', $route, $handler);
+        $this->addRoute('PUT', $route, $handler, $middleware);
     }
 
     /**
      * Adds a DELETE route to the collection
-     * 
+     *
      * This is simply an alias of $this->addRoute('DELETE', $route, $handler)
      *
      * @param string $route
-     * @param mixed  $handler
+     * @param mixed $handler
+     * @param array $middleware
      */
-    public function delete($route, $handler)
+    public function delete($route, $handler, $middleware = [])
     {
-        $this->addRoute('DELETE', $route, $handler);
+        $this->addRoute('DELETE', $route, $handler, $middleware);
     }
 
     /**
      * Adds a PATCH route to the collection
-     * 
+     *
      * This is simply an alias of $this->addRoute('PATCH', $route, $handler)
      *
      * @param string $route
-     * @param mixed  $handler
+     * @param mixed $handler
+     * @param array $middleware
      */
-    public function patch($route, $handler)
+    public function patch($route, $handler, $middleware = [])
     {
-        $this->addRoute('PATCH', $route, $handler);
+        $this->addRoute('PATCH', $route, $handler, $middleware);
     }
 
     /**
@@ -150,11 +155,12 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('HEAD', $route, $handler)
      *
      * @param string $route
-     * @param mixed  $handler
+     * @param mixed $handler
+     * @param array $middleware
      */
-    public function head($route, $handler)
+    public function head($route, $handler, $middleware = [])
     {
-        $this->addRoute('HEAD', $route, $handler);
+        $this->addRoute('HEAD', $route, $handler, $middleware);
     }
 
     /**
@@ -163,11 +169,12 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('OPTIONS', $route, $handler)
      *
      * @param string $route
-     * @param mixed  $handler
+     * @param mixed $handler
+     * @param array $middleware
      */
-    public function options($route, $handler)
+    public function options($route, $handler, $middleware = [])
     {
-        $this->addRoute('OPTIONS', $route, $handler);
+        $this->addRoute('OPTIONS', $route, $handler, $middleware);
     }
 
     /**
