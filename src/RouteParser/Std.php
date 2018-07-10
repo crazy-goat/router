@@ -29,6 +29,11 @@ REGEX;
 
         // Split on [ while skipping placeholders
         $segments = preg_split('~' . self::VARIABLE_REGEX . '(*SKIP)(*F) | \[~x', $routeWithoutClosingOptionals);
+
+        if ($segments === false) {
+            throw new BadRouteException("preg_match error code: ".preg_last_error());
+        }
+
         if ($numOptionals !== count($segments) - 1) {
             // If there are any ] in the middle of the route, throw a more specific error message
             if (preg_match('~' . self::VARIABLE_REGEX . '(*SKIP)(*F) | \]~x', $routeWithoutClosingOptionals)) {
@@ -53,7 +58,7 @@ REGEX;
     /**
      * Parses a route string that does not contain optional segments.
      *
-     * @param string
+     * @param string $route
      * @return mixed[]
      */
     private function parsePlaceholders($route)
@@ -69,7 +74,7 @@ REGEX;
         $routeData = [];
         foreach ($matches as $set) {
             if ($set[0][1] > $offset) {
-                $routeData[] = substr($route, $offset, $set[0][1] - $offset);
+                $routeData[] = substr($route, (int)$offset, $set[0][1] - $offset);
             }
             $routeData[] = [
                 $set[1][0],
@@ -79,7 +84,7 @@ REGEX;
         }
 
         if ($offset !== strlen($route)) {
-            $routeData[] = substr($route, $offset);
+            $routeData[] = substr($route, (int)$offset);
         }
 
         return $routeData;

@@ -2,8 +2,6 @@
 
 namespace FastRoute;
 
-use function FastRoute\TestFixtures\empty_options_cached;
-
 class RouteCollector
 {
     /** @var RouteParser */
