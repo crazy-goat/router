@@ -42,7 +42,7 @@ abstract class RegexBasedAbstract implements DataGenerator
     public function getData()
     {
         if (empty($this->methodToRegexToRoutesMap)) {
-            return [$this->staticRoutes, []];
+            return [$this->staticRoutes, [], $this->namedRoutes];
         }
 
         return [$this->staticRoutes, $this->generateVariableRouteData(), $this->namedRoutes];

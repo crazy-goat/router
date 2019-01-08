@@ -214,7 +214,7 @@ class DummyRouteCollector extends RouteCollector
     {
     }
 
-    public function addRoute($httpMethod, $route, $handler, $middleware = [])
+    public function addRoute($httpMethod, $route, $handler, $middleware = [], $name = null)
     {
         if (!empty($this->currentMiddleware)) {
             array_unshift($middleware, ...$this->currentMiddleware);
