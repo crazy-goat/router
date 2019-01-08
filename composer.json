@@ -23,6 +23,11 @@
     "phpunit/phpunit": "^4.8.35|~5.7",
     "phpstan/phpstan": "^0.10.1"
   },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.0-dev"
+    }
+  },
   "scripts": {
     "tests" : "./vendor/bin/phpunit",
     "phpstan" : "vendor/bin/phpstan analyse --level=max src"

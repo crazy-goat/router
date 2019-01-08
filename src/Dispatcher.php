@@ -25,7 +25,7 @@ interface Dispatcher
     public function dispatch($httpMethod, $uri);
 
     /**
-     * @param $name
+     * @param string $name
      * @param array $params
      * @return string
      */

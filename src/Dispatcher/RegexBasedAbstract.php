@@ -95,7 +95,7 @@ abstract class RegexBasedAbstract implements Dispatcher
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param array $params
      * @return mixed|string
      * @throws \Exception
@@ -114,7 +114,9 @@ abstract class RegexBasedAbstract implements Dispatcher
                     }
                 }
 
-                throw $lastException;
+                if ($lastException) {
+                    throw $lastException;
+                }
             } else if (is_string($route)) {
                 return $route;
             }
@@ -123,6 +125,11 @@ abstract class RegexBasedAbstract implements Dispatcher
         throw new BadRouteException('No route found with name:'.$name);
     }
 
+    /**
+     * @param array $route
+     * @param array $params
+     * @return string
+     */
     private function produceVariable($route, $params)
     {
         $path = [];
