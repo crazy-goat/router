@@ -1,19 +1,36 @@
-FastRoute - Fast request router for PHP
+CrazyRoute - Crazy router for PHP based on FastRoute
 =======================================
 
 This library provides a fast implementation of a regular expression based router. [Blog post explaining how the
-implementation works and why it is fast.][blog_post]
+implementation works and why it is fast.][blog_post] 
+
+This fork add these crazy functions:
+ - middleware stack - add some middlewares to your route
+ - route generation - for named route you can generate a path 
+ - pass max phpstan - possible less bugs :P
+ - `fastRoute` => `crazyRoute` compatibility - **except cache files**
 
 Install
 -------
 
 To install with composer:
 
+Add custom repository to composer.json
+```json
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/crazy-goat/CrazyRoute.git"
+        }
+    ]
+```
+next run:
+
 ```sh
 composer require nikic/fast-route
 ```
 
-Requires PHP 5.4 or newer.
+Requires PHP 7.1 or newer.
 
 Usage
 -----
@@ -282,6 +299,53 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
 The above options array corresponds to the defaults. By replacing `GroupCountBased` by
 `GroupPosBased` you could switch to a different dispatching strategy.
+
+### Middleware
+
+Adding middleware to route is very simple, just pass `middleware` paramter to `addRoute()` or `addGroup()` method in `RouteCollecotr`.
+
+```php
+$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+    $r->addRoute('GET', '/users', 'get_all_users_handler', ['root_middleware']);
+    $r->addGroup('/nested', function (FastRoute\RouteCollector $r) {
+        $r->addRoute('GET', '/users', 'handler3', ['nested-middleware']);
+    }, ['group_middleware']);
+});
+```
+
+For first route `/users` only `root_middleware` will be returned. For nested routes like `/nested/users` both middleware 
+`group_middleware` and  `nested-middleware` will be returned. You can also add more than one middleware to route:
+
+```php
+    $r->addRoute('GET', '/users', 'get_all_users_handler', ['first', 'second']);
+```
+
+Middleware stack is returned in `routeInfo` third index. If no middlewares where added to route an empty array will be returned.
+
+```php
+$r->addRoute('GET', '/users', 'get_all_users_handler', ['first', 'second']);
+
+//some usefull code
+
+$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+$middlewares = $routeInfo[3]
+``` 
+
+### Named routes and path generation
+
+CrazyRoute provide an easy way to generate path for named route. First we must add a route with name. Name is passed as 
+fifth parameter in `addRoute()` function. Route name must be unique else an exception `BadRouteException` will be thrown. 
+Now all we have to do is call `produce()` function on `Dispatcher` object. 
+
+```php
+$r->addRoute('GET', '/users', 'get_all_users_handler', [], 'users');
+
+// some crazy code
+
+$path = $dispatcher->produce('users', $route_params);
+```
+
+All required route params must be passed in second argument otherwise an exception will be thrown. 
 
 ### A Note on HEAD Requests
 

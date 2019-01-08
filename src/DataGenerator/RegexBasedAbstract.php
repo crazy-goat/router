@@ -196,4 +196,8 @@ abstract class RegexBasedAbstract implements DataGenerator
             $regex
         );
     }
+
+    public function hasNamedRoute($name) {
+        return isset($this->namedRoutes[$name]);
+    }
 }

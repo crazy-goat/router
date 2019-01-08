@@ -51,6 +51,10 @@ class RouteCollector
         }
 
         $routeDatas = $this->routeParser->parse($route);
+        if (!is_null($name) && $this->dataGenerator->hasNamedRoute($name)) {
+            throw new BadRouteException('Named route: "'.$name.'" already exists');
+        }
+
         foreach ((array) $httpMethod as $method) {
             foreach ($routeDatas as $routeData) {
                 $this->dataGenerator->addRoute($method, $routeData, $handler, $middleware, $name);

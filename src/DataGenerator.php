@@ -25,4 +25,10 @@ interface DataGenerator
      * depends on the used method of dispatch.
      */
     public function getData();
+
+    /**
+     * @param $name string
+     * @return bool
+     */
+    public function hasNamedRoute($name);
 }
