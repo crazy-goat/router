@@ -15,7 +15,16 @@ class Route
 
     /** @var mixed */
     public $handler;
+
+    /**
+     * @var array
+     */
     public $middleware;
+
+    /**
+     * @var string|null
+     */
+    public $name;
 
     /**
      * Constructs a route (value object).
@@ -26,13 +35,14 @@ class Route
      * @param array $variables
      * @param array $middleware
      */
-    public function __construct($httpMethod, $handler, $regex, $variables, $middleware = [])
+    public function __construct($httpMethod, $handler, $regex, $variables, $middleware = [], $name = null)
     {
         $this->httpMethod = $httpMethod;
         $this->handler = $handler;
         $this->regex = $regex;
         $this->variables = $variables;
         $this->middleware = $middleware;
+        $this->name = $name;
     }
 
     /**

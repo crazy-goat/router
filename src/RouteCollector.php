@@ -15,6 +15,8 @@ class RouteCollector
 
     protected $currentMiddleware = [];
 
+
+
     /**
      * Constructs a route collector.
      *
@@ -38,8 +40,9 @@ class RouteCollector
      * @param string $route
      * @param mixed $handler
      * @param array $middleware
+     * @param string|null $name
      */
-    public function addRoute($httpMethod, $route, $handler, $middleware = [])
+    public function addRoute($httpMethod, $route, $handler, $middleware = [], $name = null)
     {
         $route = $this->currentGroupPrefix . $route;
 
@@ -50,7 +53,7 @@ class RouteCollector
         $routeDatas = $this->routeParser->parse($route);
         foreach ((array) $httpMethod as $method) {
             foreach ($routeDatas as $routeData) {
-                $this->dataGenerator->addRoute($method, $routeData, $handler, $middleware);
+                $this->dataGenerator->addRoute($method, $routeData, $handler, $middleware, $name);
             }
         }
     }

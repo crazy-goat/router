@@ -2,7 +2,10 @@
 
 namespace FastRoute\Dispatcher;
 
+use FastRoute\BadRouteException;
 use FastRoute\Dispatcher;
+use FastRoute\Route;
+use FastRoute\RouteParser\Std;
 
 abstract class RegexBasedAbstract implements Dispatcher
 {
@@ -11,6 +14,11 @@ abstract class RegexBasedAbstract implements Dispatcher
 
     /** @var mixed[] */
     protected $variableRouteData = [];
+
+    /**
+     * @var array
+     */
+    protected $namedRoutes = [];
 
     /**
      * @return mixed[]
@@ -84,5 +92,52 @@ abstract class RegexBasedAbstract implements Dispatcher
         }
 
         return [self::NOT_FOUND];
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return mixed|string
+     * @throws \Exception
+     */
+    public function produce($name, $params = [])
+    {
+        if (isset($this->namedRoutes[$name])) {
+            $route = $this->namedRoutes[$name];
+            if (is_array($route)) {
+                $lastException = null;
+                foreach (array_reverse($route) as $routeOption) {
+                    try {
+                        return $this->produceVariable($routeOption, $params);
+                    } catch (BadRouteException $exception) {
+                        $lastException = $exception;
+                    }
+                }
+
+                throw $lastException;
+            } else if (is_string($route)) {
+                return $route;
+            }
+        }
+
+        throw new BadRouteException('No route found with name:'.$name);
+    }
+
+    private function produceVariable($route, $params)
+    {
+        $path = [];
+
+        foreach ($route as $segment) {
+            if (is_string($segment)) {
+                $path[] = $segment;
+            } else if (is_array($segment)) {
+                if (array_key_exists($segment[0], $params)) {
+                    $path[] = $params[$segment[0]];
+                } else {
+                    throw new BadRouteException('Missing route parameter "'.$segment[0].'"');
+                }
+            }
+        }
+        return implode('',$path);
     }
 }

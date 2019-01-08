@@ -52,6 +52,7 @@ REGEX;
             $currentRoute .= $segment;
             $routeDatas[] = $this->parsePlaceholders($currentRoute);
         }
+
         return $routeDatas;
     }
 

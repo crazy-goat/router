@@ -23,4 +23,11 @@ interface Dispatcher
      * @return array
      */
     public function dispatch($httpMethod, $uri);
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return string
+     */
+    public function produce($name, $params = []);
 }

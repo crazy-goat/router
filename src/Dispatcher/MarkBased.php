@@ -6,7 +6,7 @@ class MarkBased extends RegexBasedAbstract
 {
     public function __construct($data)
     {
-        list($this->staticRouteMap, $this->variableRouteData) = $data;
+        list($this->staticRouteMap, $this->variableRouteData, $this->namedRoutes) = $data;
     }
 
     protected function dispatchVariableRoute($routeData, $uri)
