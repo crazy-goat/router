@@ -1,6 +1,6 @@
 <?hh // decl
 
-namespace FastRoute {
+namespace CrazyGoat\Router {
     class BadRouteException extends \LogicException {
     }
 
@@ -52,8 +52,8 @@ namespace FastRoute {
         ) $options = shape()): Dispatcher;
 }
 
-namespace FastRoute\DataGenerator {
-    abstract class RegexBasedAbstract implements \FastRoute\DataGenerator {
+namespace CrazyGoat\Router\DataGenerator {
+    abstract class RegexBasedAbstract implements \CrazyGoat\Router\DataGenerator {
         protected abstract function getApproxChunkSize();
         protected abstract function processChunk($regexToRoutesMap);
 
@@ -82,8 +82,8 @@ namespace FastRoute\DataGenerator {
     }
 }
 
-namespace FastRoute\Dispatcher {
-    abstract class RegexBasedAbstract implements \FastRoute\Dispatcher {
+namespace CrazyGoat\Router\Dispatcher {
+    abstract class RegexBasedAbstract implements \CrazyGoat\Router\Dispatcher {
         protected abstract function dispatchVariableRoute(array<array> $routeData, string $uri): array;
 
         public function dispatch(string $httpMethod, string $uri): array;
@@ -110,8 +110,8 @@ namespace FastRoute\Dispatcher {
     }
 }
 
-namespace FastRoute\RouteParser {
-    class Std implements \FastRoute\RouteParser {
+namespace CrazyGoat\Router\RouteParser {
+    class Std implements \CrazyGoat\Router\RouteParser {
         const string VARIABLE_REGEX = <<<'REGEX'
 \{
     \s* ([a-zA-Z][a-zA-Z0-9_]*) \s*
