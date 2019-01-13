@@ -1,6 +1,6 @@
 <?php
 
-namespace FastRoute;
+namespace CrazyGoat\Router;
 
 interface Dispatcher
 {
@@ -23,11 +23,4 @@ interface Dispatcher
      * @return array
      */
     public function dispatch($httpMethod, $uri);
-
-    /**
-     * @param string $name
-     * @param array $params
-     * @return string
-     */
-    public function produce($name, $params = []);
 }

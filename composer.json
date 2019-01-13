@@ -1,17 +1,21 @@
 {
-  "name": "nikic/fast-route",
-  "description": "Fast request router for PHP",
+  "name": "crazy-goat/router",
+  "description": "Jet another php router",
   "keywords": ["routing", "router"],
   "license": "BSD-3-Clause",
   "authors": [
     {
       "name": "Nikita Popov",
       "email": "nikic@php.net"
+    },
+    {
+      "name": "Piotr Hałas",
+      "email": "piotr@halas.net.pl"
     }
   ],
   "autoload": {
     "psr-4": {
-      "FastRoute\\": "src/"
+      "CrazyGoat\\Router\\": "src/"
     },
     "files": ["src/functions.php"]
   },
@@ -22,11 +26,6 @@
   "require-dev": {
     "phpunit/phpunit": "^4.8.35|~5.7",
     "phpstan/phpstan": "^0.10.1"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "2.0-dev"
-    }
   },
   "scripts": {
     "tests" : "./vendor/bin/phpunit",

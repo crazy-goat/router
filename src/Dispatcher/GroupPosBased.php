@@ -1,6 +1,6 @@
 <?php
 
-namespace FastRoute\Dispatcher;
+namespace CrazyGoat\Router\Dispatcher;
 
 class GroupPosBased extends RegexBasedAbstract
 {

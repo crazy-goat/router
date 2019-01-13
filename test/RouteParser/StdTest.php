@@ -1,6 +1,6 @@
 <?php
 
-namespace FastRoute\RouteParser;
+namespace CrazyGoat\Router\RouteParser;
 
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +18,7 @@ class StdTest extends TestCase
     public function testParseError($routeString, $expectedExceptionMessage)
     {
         $parser = new Std();
-        $this->setExpectedException('FastRoute\\BadRouteException', $expectedExceptionMessage);
+        $this->setExpectedException('CrazyGoat\\Router\\BadRouteException', $expectedExceptionMessage);
         $parser->parse($routeString);
     }
 

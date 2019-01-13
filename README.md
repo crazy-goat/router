@@ -1,4 +1,4 @@
-CrazyRoute - Crazy router for PHP based on FastRoute
+CrazyGoat\Route - Crazy router for PHP, based on FastRoute
 =======================================
 
 This library provides a fast implementation of a regular expression based router. [Blog post explaining how the
@@ -291,9 +291,9 @@ through the options array:
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     /* ... */
 }, [
-    'routeParser' => 'FastRoute\\RouteParser\\Std',
-    'dataGenerator' => 'FastRoute\\DataGenerator\\GroupCountBased',
-    'dispatcher' => 'FastRoute\\Dispatcher\\GroupCountBased',
+    'routeParser' => 'CrazyGoat\\Router\\RouteParser\\Std',
+    'dataGenerator' => 'CrazyGoat\\Router\\DataGenerator\\GroupCountBased',
+    'dispatcher' => 'CrazyGoat\\Router\\Dispatcher\\GroupCountBased',
 ]);
 ```
 

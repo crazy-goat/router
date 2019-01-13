@@ -1,9 +1,9 @@
 <?php
 
-namespace FastRoute\RouteParser;
+namespace CrazyGoat\Router\RouteParser;
 
-use FastRoute\BadRouteException;
-use FastRoute\RouteParser;
+use CrazyGoat\Router\BadRouteException;
+use CrazyGoat\Router\RouteParser;
 
 /**
  * Parses route strings of the following form:

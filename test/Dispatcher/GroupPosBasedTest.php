@@ -1,16 +1,16 @@
 <?php
 
-namespace FastRoute\Dispatcher;
+namespace CrazyGoat\Router\Dispatcher;
 
 class GroupPosBasedTest extends DispatcherTest
 {
     protected function getDispatcherClass()
     {
-        return 'FastRoute\\Dispatcher\\GroupPosBased';
+        return 'CrazyGoat\\Router\\Dispatcher\\GroupPosBased';
     }
 
     protected function getDataGeneratorClass()
     {
-        return 'FastRoute\\DataGenerator\\GroupPosBased';
+        return 'CrazyGoat\\Router\\DataGenerator\\GroupPosBased';
     }
 }

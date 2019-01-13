@@ -1,6 +1,6 @@
 <?php
 
-namespace FastRoute\Dispatcher;
+namespace CrazyGoat\Router\Dispatcher;
 
 class MarkBasedTest extends DispatcherTest
 {
@@ -14,11 +14,11 @@ class MarkBasedTest extends DispatcherTest
 
     protected function getDispatcherClass()
     {
-        return 'FastRoute\\Dispatcher\\MarkBased';
+        return 'CrazyGoat\\Router\\Dispatcher\\MarkBased';
     }
 
     protected function getDataGeneratorClass()
     {
-        return 'FastRoute\\DataGenerator\\MarkBased';
+        return 'CrazyGoat\\Router\\DataGenerator\\MarkBased';
     }
 }

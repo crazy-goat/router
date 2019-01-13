@@ -1,11 +1,11 @@
 <?php
 
-namespace FastRoute\DataGenerator;
+namespace CrazyGoat\Router\DataGenerator;
 
-use FastRoute\BadRouteException;
-use FastRoute\DataGenerator;
-use FastRoute\Route;
-use FastRoute\RouteParser\Std;
+use CrazyGoat\Router\BadRouteException;
+use CrazyGoat\Router\DataGenerator;
+use CrazyGoat\Router\Route;
+use CrazyGoat\Router\RouteParser\Std;
 
 abstract class RegexBasedAbstract implements DataGenerator
 {

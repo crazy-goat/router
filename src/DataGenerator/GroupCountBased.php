@@ -1,6 +1,6 @@
 <?php
 
-namespace FastRoute\DataGenerator;
+namespace CrazyGoat\Router\DataGenerator;
 
 class GroupCountBased extends RegexBasedAbstract
 {
@@ -16,7 +16,7 @@ class GroupCountBased extends RegexBasedAbstract
         $numGroups = 0;
         /**
          * @var string $regex
-         * @var \FastRoute\Route $route
+         * @var \CrazyGoat\Router\Route $route
          */
         foreach ($regexToRoutesMap as $regex => $route) {
             $numVariables = count($route->variables);

@@ -1,16 +1,16 @@
 <?php
 
-namespace FastRoute\Dispatcher;
+namespace CrazyGoat\Router\Dispatcher;
 
 class GroupCountBasedTest extends DispatcherTest
 {
     protected function getDispatcherClass()
     {
-        return 'FastRoute\\Dispatcher\\GroupCountBased';
+        return 'CrazyGoat\\Router\\Dispatcher\\GroupCountBased';
     }
 
     protected function getDataGeneratorClass()
     {
-        return 'FastRoute\\DataGenerator\\GroupCountBased';
+        return 'CrazyGoat\\Router\\DataGenerator\\GroupCountBased';
     }
 }

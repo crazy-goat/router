@@ -1,13 +1,14 @@
 <?php
 
-namespace FastRoute\Dispatcher;
+namespace CrazyGoat\Router\Dispatcher;
 
-use FastRoute\BadRouteException;
-use FastRoute\Dispatcher;
-use FastRoute\Route;
-use FastRoute\RouteParser\Std;
+use CrazyGoat\Router\BadRouteException;
+use CrazyGoat\Router\Dispatcher;
+use CrazyGoat\Router\Route;
+use CrazyGoat\Router\RouteGenerator;
+use CrazyGoat\Router\RouteParser\Std;
 
-abstract class RegexBasedAbstract implements Dispatcher
+abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
 {
     /** @var mixed[][] */
     protected $staticRouteMap = [];
@@ -100,7 +101,7 @@ abstract class RegexBasedAbstract implements Dispatcher
      * @return mixed|string
      * @throws \Exception
      */
-    public function produce($name, $params = [])
+    public function pathFor($name, $params = [])
     {
         if (isset($this->namedRoutes[$name])) {
             $route = $this->namedRoutes[$name];

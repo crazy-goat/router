@@ -1,11 +1,11 @@
 <?hh
 
-namespace FastRoute\TestFixtures;
+namespace CrazyGoat\Router\TestFixtures;
 
-function empty_options_simple(): \FastRoute\Dispatcher {
-    return \FastRoute\simpleDispatcher($collector ==> {}, shape());
+function empty_options_simple(): \CrazyGoat\Router\Dispatcher {
+    return \CrazyGoat\Router\simpleDispatcher($collector ==> {}, shape());
 }
 
-function empty_options_cached(): \FastRoute\Dispatcher {
-    return \FastRoute\cachedDispatcher($collector ==> {}, shape());
+function empty_options_cached(): \CrazyGoat\Router\Dispatcher {
+    return \CrazyGoat\Router\cachedDispatcher($collector ==> {}, shape());
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace FastRoute;
+namespace CrazyGoat\Router;
 
 class RouteCollector
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace FastRoute\Dispatcher;
+namespace CrazyGoat\Router\Dispatcher;
 
 class CharCountBasedTest extends DispatcherTest
 {
     protected function getDispatcherClass()
     {
-        return 'FastRoute\\Dispatcher\\CharCountBased';
+        return 'CrazyGoat\\Router\\Dispatcher\\CharCountBased';
     }
 
     protected function getDataGeneratorClass()
     {
-        return 'FastRoute\\DataGenerator\\CharCountBased';
+        return 'CrazyGoat\\Router\\DataGenerator\\CharCountBased';
     }
 }

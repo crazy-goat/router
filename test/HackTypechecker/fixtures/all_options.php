@@ -1,27 +1,27 @@
 <?hh
 
-namespace FastRoute\TestFixtures;
+namespace CrazyGoat\Router\TestFixtures;
 
-function all_options_simple(): \FastRoute\Dispatcher {
-    return \FastRoute\simpleDispatcher(
+function all_options_simple(): \CrazyGoat\Router\Dispatcher {
+    return \CrazyGoat\Router\simpleDispatcher(
       $collector ==> {},
       shape(
-        'routeParser' => \FastRoute\RouteParser\Std::class,
-        'dataGenerator' => \FastRoute\DataGenerator\GroupCountBased::class,
-        'dispatcher' => \FastRoute\Dispatcher\GroupCountBased::class,
-        'routeCollector' => \FastRoute\RouteCollector::class,
+        'routeParser' => \CrazyGoat\Router\RouteParser\Std::class,
+        'dataGenerator' => \CrazyGoat\Router\DataGenerator\GroupCountBased::class,
+        'dispatcher' => \CrazyGoat\Router\Dispatcher\GroupCountBased::class,
+        'routeCollector' => \CrazyGoat\Router\RouteCollector::class,
       ),
     );
 }
 
-function all_options_cached(): \FastRoute\Dispatcher {
-    return \FastRoute\cachedDispatcher(
+function all_options_cached(): \CrazyGoat\Router\Dispatcher {
+    return \CrazyGoat\Router\cachedDispatcher(
       $collector ==> {},
       shape(
-        'routeParser' => \FastRoute\RouteParser\Std::class,
-        'dataGenerator' => \FastRoute\DataGenerator\GroupCountBased::class,
-        'dispatcher' => \FastRoute\Dispatcher\GroupCountBased::class,
-        'routeCollector' => \FastRoute\RouteCollector::class,
+        'routeParser' => \CrazyGoat\Router\RouteParser\Std::class,
+        'dataGenerator' => \CrazyGoat\Router\DataGenerator\GroupCountBased::class,
+        'dispatcher' => \CrazyGoat\Router\Dispatcher\GroupCountBased::class,
+        'routeCollector' => \CrazyGoat\Router\RouteCollector::class,
         'cacheFile' => '/dev/null',
         'cacheDisabled' => false,
       ),

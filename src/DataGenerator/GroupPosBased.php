@@ -1,6 +1,6 @@
 <?php
 
-namespace FastRoute\DataGenerator;
+namespace CrazyGoat\Router\DataGenerator;
 
 class GroupPosBased extends RegexBasedAbstract
 {
