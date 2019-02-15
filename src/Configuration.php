@@ -78,5 +78,4 @@ class Configuration
     {
         return $this->dispatcher;
     }
-
 }

@@ -6,7 +6,8 @@ namespace CrazyGoat\Router\Cache;
 use CrazyGoat\Router\Exceptions\CacheSaveException;
 use CrazyGoat\Router\Interfaces\CacheProvider;
 
-class File implements CacheProvider {
+class File implements CacheProvider
+{
     /**
      * @var string
      */

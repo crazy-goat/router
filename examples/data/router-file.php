@@ -1,5 +1,5 @@
 <?php
-return function(CrazyGoat\Router\RouteCollector $r) {
+return function (CrazyGoat\Router\RouteCollector $r) {
     $r->get('/users', 'get_all_users_handler');
     // {id} must be a number (\d+)
     $r->get('/user/{id:\d+}', 'get_user_handler');

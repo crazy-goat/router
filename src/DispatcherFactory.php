@@ -16,7 +16,7 @@ final class DispatcherFactory
     /**
      * @return RouteCollector
      */
-    static public function defaultCollector(): RouteCollector
+    public static function defaultCollector(): RouteCollector
     {
         return new RouteCollector(
             new Std(),
@@ -24,7 +24,7 @@ final class DispatcherFactory
         );
     }
 
-    static public function defaultDispatcher(): Dispatcher
+    public static function defaultDispatcher(): Dispatcher
     {
         return new GroupCountDispatcher();
     }
@@ -33,7 +33,7 @@ final class DispatcherFactory
      * @param Configuration $config
      * @return Dispatcher
      */
-    static public function prepareDispatcher(Configuration $config): Dispatcher
+    public static function prepareDispatcher(Configuration $config): Dispatcher
     {
         $data = null;
         if ($config->isCacheEnabled() && $config->getCacheProvider() instanceof CacheProvider) {
@@ -56,7 +56,7 @@ final class DispatcherFactory
         return $dispatcher;
     }
 
-    static private function loadFromFile(Configuration $config): array
+    private static function loadFromFile(Configuration $config): array
     {
         $filename = $config->getRouterFile();
         if (file_exists($filename) && is_readable($filename)) {

@@ -23,7 +23,8 @@ if (!function_exists('CrazyGoat\Router\simpleDispatcher')) {
 
         /** @var RouteCollector $routeCollector */
         $routeCollector = new $options['routeCollector'](
-            new $options['routeParser'], new $options['dataGenerator']
+            new $options['routeParser'],
+            new $options['dataGenerator']
         );
         $routeDefinitionCallback($routeCollector);
 
@@ -59,7 +60,8 @@ if (!function_exists('CrazyGoat\Router\simpleDispatcher')) {
         }
 
         $routeCollector = new $options['routeCollector'](
-            new $options['routeParser'], new $options['dataGenerator']
+            new $options['routeParser'],
+            new $options['dataGenerator']
         );
         $routeDefinitionCallback($routeCollector);
 

@@ -122,7 +122,7 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
                 if ($lastException) {
                     throw $lastException;
                 }
-            } else if (is_string($route)) {
+            } elseif (is_string($route)) {
                 return $route;
             }
         }
@@ -142,7 +142,7 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
         foreach ($route as $segment) {
             if (is_string($segment)) {
                 $path[] = $segment;
-            } else if (is_array($segment)) {
+            } elseif (is_array($segment)) {
                 if (array_key_exists($segment[0], $params)) {
                     $path[] = $params[$segment[0]];
                 } else {
@@ -150,6 +150,6 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
                 }
             }
         }
-        return implode('',$path);
+        return implode('', $path);
     }
 }
