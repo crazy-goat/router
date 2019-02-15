@@ -34,7 +34,7 @@ interface DataGenerator
     public function getData(): array;
 
     /**
-     * @param $name string
+     * @param string $name
      * @return bool
      */
     public function hasNamedRoute(string $name): bool;

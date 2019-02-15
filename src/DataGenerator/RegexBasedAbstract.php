@@ -13,7 +13,7 @@ abstract class RegexBasedAbstract implements DataGenerator
     /** @var array */
     protected $staticRoutes = [];
 
-    /** @var Route[] */
+    /** @var Route[][] */
     protected $methodToRegexToRoutesMap = [];
 
     /** @var array */

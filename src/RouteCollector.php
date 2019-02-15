@@ -90,7 +90,7 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('GET', $route, $handler)
      *
      * @param string $route
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      */
     public function get(string $route, string $handler, array $middleware = []): void
@@ -118,7 +118,7 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('PUT', $route, $handler)
      *
      * @param string $route
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      */
     public function put(string $route, string $handler, array $middleware = []): void
@@ -132,7 +132,7 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('DELETE', $route, $handler)
      *
      * @param string $route
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      */
     public function delete(string $route, string $handler, array $middleware = []): void
@@ -146,7 +146,7 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('PATCH', $route, $handler)
      *
      * @param string $route
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      */
     public function patch(string $route, string $handler, array $middleware = []): void
@@ -160,7 +160,7 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('HEAD', $route, $handler)
      *
      * @param string $route
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      */
     public function head(string $route, string $handler, array $middleware = []): void
@@ -174,7 +174,7 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('OPTIONS', $route, $handler)
      *
      * @param string $route
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      */
     public function options(string $route, string $handler, array $middleware = []): void
@@ -188,7 +188,7 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('*', $route, $handler)
      *
      * @param string $route
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      */
     public function any(string $route, string $handler, array $middleware = []): void
