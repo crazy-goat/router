@@ -1,15 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router;
 
 if (!function_exists('CrazyGoat\Router\simpleDispatcher')) {
     /**
-     * @param callable $routeDefinitionCallback
+     * @param \Closure $routeDefinitionCallback
      * @param array $options
      *
      * @return Dispatcher
      */
-    function simpleDispatcher(callable $routeDefinitionCallback, array $options = [])
+    function simpleDispatcher(\Closure $routeDefinitionCallback, array $options = []): Dispatcher
     {
         $options += [
             'routeParser' => 'CrazyGoat\\Router\\RouteParser\\Std',
@@ -28,12 +29,12 @@ if (!function_exists('CrazyGoat\Router\simpleDispatcher')) {
     }
 
     /**
-     * @param callable $routeDefinitionCallback
+     * @param \Closure $routeDefinitionCallback
      * @param array $options
      *
      * @return Dispatcher
      */
-    function cachedDispatcher(callable $routeDefinitionCallback, array $options = [])
+    function cachedDispatcher(\Closure $routeDefinitionCallback, array $options = []): Dispatcher
     {
         $options += [
             'routeParser' => 'CrazyGoat\\Router\\RouteParser\\Std',

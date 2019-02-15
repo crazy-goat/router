@@ -1,15 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router\Dispatcher;
 
-class GroupPosBased extends RegexBasedAbstract
+final class GroupPosBased extends RegexBasedAbstract
 {
-    public function __construct($data)
+    public function __construct(array $data)
     {
         list($this->staticRouteMap, $this->variableRouteData, $this->namedRoutes) = $data;
     }
 
-    protected function dispatchVariableRoute($routeData, $uri)
+    protected function dispatchVariableRoute(array $routeData, string $uri): array
     {
         foreach ($routeData as $data) {
             if (!preg_match($data['regex'], $uri, $matches)) {

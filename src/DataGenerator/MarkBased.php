@@ -1,15 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router\DataGenerator;
 
-class MarkBased extends RegexBasedAbstract
+final class MarkBased extends RegexBasedAbstract
 {
-    protected function getApproxChunkSize()
+    protected function getApproxChunkSize(): int
     {
         return 30;
     }
 
-    protected function processChunk($regexToRoutesMap)
+    protected function processChunk(array $regexToRoutesMap): array
     {
         $routeMap = [];
         $regexes = [];

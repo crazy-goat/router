@@ -1,12 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router\Dispatcher;
 
 use CrazyGoat\Router\BadRouteException;
 use CrazyGoat\Router\Dispatcher;
-use CrazyGoat\Router\Route;
 use CrazyGoat\Router\RouteGenerator;
-use CrazyGoat\Router\RouteParser\Std;
 
 abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
 {
@@ -16,17 +15,17 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
     /** @var mixed[] */
     protected $variableRouteData = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $namedRoutes = [];
 
     /**
+     * @param array $routeData
+     * @param string $uri
      * @return mixed[]
      */
-    abstract protected function dispatchVariableRoute($routeData, $uri);
+    abstract protected function dispatchVariableRoute(array $routeData, string $uri): array;
 
-    public function dispatch($httpMethod, $uri)
+    public function dispatch(string $httpMethod, string $uri): array
     {
         if (isset($this->staticRouteMap[$httpMethod][$uri])) {
             list($handler, $middleware) = $this->staticRouteMap[$httpMethod][$uri];
@@ -98,10 +97,10 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
     /**
      * @param string $name
      * @param array $params
-     * @return mixed|string
+     * @return string
      * @throws \Exception
      */
-    public function pathFor($name, $params = [])
+    public function pathFor(string $name, array $params = []): string
     {
         if (isset($this->namedRoutes[$name])) {
             $route = $this->namedRoutes[$name];
@@ -131,7 +130,7 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
      * @param array $params
      * @return string
      */
-    private function produceVariable($route, $params)
+    private function produceVariable(array $route, array $params): string
     {
         $path = [];
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router;
 
@@ -13,9 +14,8 @@ class RouteCollector
     /** @var string */
     protected $currentGroupPrefix;
 
+    /** @var array */
     protected $currentMiddleware = [];
-
-
 
     /**
      * Constructs a route collector.
@@ -36,13 +36,13 @@ class RouteCollector
      *
      * The syntax used in the $route string depends on the used route parser.
      *
-     * @param string|string[] $httpMethod
+     * @param array $httpMethod
      * @param string $route
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      * @param string|null $name
      */
-    public function addRoute($httpMethod, $route, $handler, $middleware = [], $name = null)
+    public function addRoute(array $httpMethod, string $route, string $handler, array $middleware = [], ?string $name = null): void
     {
         $route = $this->currentGroupPrefix . $route;
 
@@ -55,7 +55,7 @@ class RouteCollector
             throw new BadRouteException('Named route: "'.$name.'" already exists');
         }
 
-        foreach ((array) $httpMethod as $method) {
+        foreach ($httpMethod as $method) {
             foreach ($routeDatas as $routeData) {
                 $this->dataGenerator->addRoute($method, $routeData, $handler, $middleware, $name);
             }
@@ -68,10 +68,10 @@ class RouteCollector
      * All routes created in the passed callback will have the given group prefix prepended.
      *
      * @param string $prefix
-     * @param callable $callback
+     * @param \Closure $callback
      * @param array $middleware
      */
-    public function addGroup($prefix, callable $callback, $middleware = [])
+    public function addGroup(string $prefix, \Closure $callback, array $middleware = []): void
     {
         $previousGroupPrefix = $this->currentGroupPrefix;
         $previousMiddleware = $this->currentMiddleware;
@@ -93,9 +93,9 @@ class RouteCollector
      * @param mixed $handler
      * @param array $middleware
      */
-    public function get($route, $handler, $middleware = [])
+    public function get(string $route, string $handler, array $middleware = []): void
     {
-        $this->addRoute('GET', $route, $handler, $middleware);
+        $this->addRoute(['GET'], $route, $handler, $middleware);
     }
 
     /**
@@ -104,12 +104,12 @@ class RouteCollector
      * This is simply an alias of $this->addRoute('POST', $route, $handler)
      *
      * @param string $route
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      */
-    public function post($route, $handler, $middleware = [])
+    public function post(string $route, string $handler, array $middleware = []): void
     {
-        $this->addRoute('POST', $route, $handler, $middleware);
+        $this->addRoute(['POST'], $route, $handler, $middleware);
     }
 
     /**
@@ -121,9 +121,9 @@ class RouteCollector
      * @param mixed $handler
      * @param array $middleware
      */
-    public function put($route, $handler, $middleware = [])
+    public function put(string $route, string $handler, array $middleware = []): void
     {
-        $this->addRoute('PUT', $route, $handler, $middleware);
+        $this->addRoute(['PUT'], $route, $handler, $middleware);
     }
 
     /**
@@ -135,9 +135,9 @@ class RouteCollector
      * @param mixed $handler
      * @param array $middleware
      */
-    public function delete($route, $handler, $middleware = [])
+    public function delete(string $route, string $handler, array $middleware = []): void
     {
-        $this->addRoute('DELETE', $route, $handler, $middleware);
+        $this->addRoute(['DELETE'], $route, $handler, $middleware);
     }
 
     /**
@@ -149,9 +149,9 @@ class RouteCollector
      * @param mixed $handler
      * @param array $middleware
      */
-    public function patch($route, $handler, $middleware = [])
+    public function patch(string $route, string $handler, array $middleware = []): void
     {
-        $this->addRoute('PATCH', $route, $handler, $middleware);
+        $this->addRoute(['PATCH'], $route, $handler, $middleware);
     }
 
     /**
@@ -163,9 +163,9 @@ class RouteCollector
      * @param mixed $handler
      * @param array $middleware
      */
-    public function head($route, $handler, $middleware = [])
+    public function head(string $route, string $handler, array $middleware = []): void
     {
-        $this->addRoute('HEAD', $route, $handler, $middleware);
+        $this->addRoute(['HEAD'], $route, $handler, $middleware);
     }
 
     /**
@@ -177,9 +177,23 @@ class RouteCollector
      * @param mixed $handler
      * @param array $middleware
      */
-    public function options($route, $handler, $middleware = [])
+    public function options(string $route, string $handler, array $middleware = []): void
     {
-        $this->addRoute('OPTIONS', $route, $handler, $middleware);
+        $this->addRoute(['OPTIONS'], $route, $handler, $middleware);
+    }
+
+    /**
+     * Adds an ANY route to the collection
+     *
+     * This is simply an alias of $this->addRoute('*', $route, $handler)
+     *
+     * @param string $route
+     * @param mixed $handler
+     * @param array $middleware
+     */
+    public function any(string $route, string $handler, array $middleware = []): void
+    {
+        $this->addRoute(['*'], $route, $handler, $middleware);
     }
 
     /**
@@ -187,7 +201,7 @@ class RouteCollector
      *
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->dataGenerator->getData();
     }

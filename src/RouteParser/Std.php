@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router\RouteParser;
 
@@ -10,7 +11,7 @@ use CrazyGoat\Router\RouteParser;
  *
  * "/user/{name}[/{id:[0-9]+}]"
  */
-class Std implements RouteParser
+final class Std implements RouteParser
 {
     const VARIABLE_REGEX = <<<'REGEX'
 \{
@@ -22,7 +23,7 @@ class Std implements RouteParser
 REGEX;
     const DEFAULT_DISPATCH_REGEX = '[^/]+';
 
-    public function parse($route)
+    public function parse(string $route): array
     {
         $routeWithoutClosingOptionals = rtrim($route, ']');
         $numOptionals = strlen($route) - strlen($routeWithoutClosingOptionals);
@@ -60,9 +61,9 @@ REGEX;
      * Parses a route string that does not contain optional segments.
      *
      * @param string $route
-     * @return mixed[]
+     * @return array
      */
-    private function parsePlaceholders($route)
+    private function parsePlaceholders(string $route): array
     {
         if (!preg_match_all(
             '~' . self::VARIABLE_REGEX . '~x', $route, $matches,

@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router;
 
-class Route
+final class Route implements RouteInterface
 {
     /** @var string */
     public $httpMethod;
@@ -13,30 +14,33 @@ class Route
     /** @var array */
     public $variables;
 
-    /** @var mixed */
+    /** @var string */
     public $handler;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     public $middleware;
 
-    /**
-     * @var string|null
-     */
+    /** @var ?string */
     public $name;
 
     /**
      * Constructs a route (value object).
      *
      * @param string $httpMethod
-     * @param mixed $handler
+     * @param string $handler
      * @param string $regex
      * @param array $variables
      * @param array $middleware
+     * @param string|null $name
      */
-    public function __construct($httpMethod, $handler, $regex, $variables, $middleware = [], $name = null)
-    {
+    public function __construct(
+        string $httpMethod,
+        string $handler,
+        string $regex,
+        array $variables,
+        array $middleware = [],
+        ?string $name = null
+    ) {
         $this->httpMethod = $httpMethod;
         $this->handler = $handler;
         $this->regex = $regex;
@@ -52,7 +56,7 @@ class Route
      *
      * @return bool
      */
-    public function matches($str)
+    public function matches(string $str): bool
     {
         $regex = '~^' . $this->regex . '$~';
         return (bool) preg_match($regex, $str);

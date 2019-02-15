@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router\DataGenerator;
 
@@ -9,25 +10,27 @@ use CrazyGoat\Router\RouteParser\Std;
 
 abstract class RegexBasedAbstract implements DataGenerator
 {
-    /** @var mixed[][] */
+    /** @var array */
     protected $staticRoutes = [];
 
-    /** @var Route[][] */
+    /** @var Route[] */
     protected $methodToRegexToRoutesMap = [];
 
+    /** @var array */
     protected $namedRoutes = [];
 
     /**
      * @return int
      */
-    abstract protected function getApproxChunkSize();
+    abstract protected function getApproxChunkSize(): int;
 
     /**
-     * @return mixed[]
+     * @param array $regexToRoutesMap
+     * @return array
      */
-    abstract protected function processChunk($regexToRoutesMap);
+    abstract protected function processChunk(array $regexToRoutesMap): array;
 
-    public function addRoute($httpMethod, $routeData, $handler, $middleware = [], $name = null)
+    public function addRoute(string $httpMethod, array $routeData, string $handler, array $middleware = [], ?string $name = null): void
     {
         if ($this->isStaticRoute($routeData)) {
             $this->addStaticRoute($httpMethod, $routeData, $handler, $middleware, $name);
@@ -37,9 +40,9 @@ abstract class RegexBasedAbstract implements DataGenerator
     }
 
     /**
-     * @return mixed[]
+     * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         if (empty($this->methodToRegexToRoutesMap)) {
             return [$this->staticRoutes, [], $this->namedRoutes];
@@ -49,9 +52,9 @@ abstract class RegexBasedAbstract implements DataGenerator
     }
 
     /**
-     * @return mixed[]
+     * @return array
      */
-    private function generateVariableRouteData()
+    private function generateVariableRouteData(): array
     {
         $data = [];
         foreach ($this->methodToRegexToRoutesMap as $method => $regexToRoutesMap) {
@@ -66,22 +69,22 @@ abstract class RegexBasedAbstract implements DataGenerator
      * @param int $count
      * @return int
      */
-    private function computeChunkSize($count)
+    private function computeChunkSize(int $count): int
     {
         $numParts = max(1, round($count / $this->getApproxChunkSize()));
-        return (int) ceil($count / $numParts);
+        return (int)ceil($count / $numParts);
     }
 
     /**
-     * @param mixed[] $routeData
+     * @param array $routeData
      * @return bool
      */
-    private function isStaticRoute($routeData)
+    private function isStaticRoute(array $routeData): bool
     {
         return count($routeData) === 1 && is_string($routeData[0]);
     }
 
-    private function addStaticRoute($httpMethod, $routeData, $handler, $middlewares = [], $name = null)
+    private function addStaticRoute(string $httpMethod, array $routeData, string $handler, array $middlewares = [], ?string $name = null): void
     {
         $routeStr = $routeData[0];
 
@@ -110,7 +113,7 @@ abstract class RegexBasedAbstract implements DataGenerator
         }
     }
 
-    private function addVariableRoute($httpMethod, $routeData, $handler, $middlewares = [], $name = null)
+    private function addVariableRoute(string $httpMethod, array $routeData, string $handler, array $middlewares = [], ?string $name = null): void
     {
         list($regex, $variables) = $this->buildRegexForRoute($routeData);
 
@@ -133,10 +136,10 @@ abstract class RegexBasedAbstract implements DataGenerator
     }
 
     /**
-     * @param mixed[] $routeData
-     * @return mixed[]
+     * @param array $routeData
+     * @return array
      */
-    private function buildRegexForRoute($routeData)
+    private function buildRegexForRoute(array $routeData): array
     {
         $regex = '';
         $variables = [];
@@ -172,7 +175,7 @@ abstract class RegexBasedAbstract implements DataGenerator
      * @param string $regex
      * @return bool
      */
-    private function regexHasCapturingGroups($regex)
+    private function regexHasCapturingGroups(string $regex): bool
     {
         if (false === strpos($regex, '(')) {
             // Needs to have at least a ( to contain a capturing group
@@ -180,7 +183,7 @@ abstract class RegexBasedAbstract implements DataGenerator
         }
 
         // Semi-accurate detection for capturing groups
-        return (bool) preg_match(
+        return (bool)preg_match(
             '~
                 (?:
                     \(\?\(
@@ -197,7 +200,8 @@ abstract class RegexBasedAbstract implements DataGenerator
         );
     }
 
-    public function hasNamedRoute($name) {
+    public function hasNamedRoute(string $name): bool
+    {
         return isset($this->namedRoutes[$name]);
     }
 }

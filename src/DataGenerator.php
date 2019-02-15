@@ -14,21 +14,28 @@ interface DataGenerator
      *
      * @param string $httpMethod
      * @param array $routeData
-     * @param mixed $handler
+     * @param string $handler
      * @param array $middleware
      * @param string|null $name
      */
-    public function addRoute($httpMethod, $routeData, $handler, $middleware = [], $name = null);
+    public function addRoute(
+        string $httpMethod,
+        array $routeData,
+        string $handler,
+        array $middleware = [],
+        ?string $name = null
+    ): void;
 
     /**
      * Returns dispatcher data in some unspecified format, which
      * depends on the used method of dispatch.
+     * @return array
      */
-    public function getData();
+    public function getData(): array;
 
     /**
      * @param $name string
      * @return bool
      */
-    public function hasNamedRoute($name);
+    public function hasNamedRoute(string $name): bool;
 }

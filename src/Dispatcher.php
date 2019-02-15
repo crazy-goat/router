@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router;
 
@@ -22,5 +23,5 @@ interface Dispatcher
      *
      * @return array
      */
-    public function dispatch($httpMethod, $uri);
+    public function dispatch(string $httpMethod, string $uri): array;
 }

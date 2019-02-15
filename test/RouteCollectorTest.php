@@ -19,13 +19,13 @@ class RouteCollectorTest extends TestCase
         $r->options('/options', 'options');
 
         $expected = [
-            ['DELETE', '/delete', 'delete', []],
-            ['GET', '/get', 'get', []],
-            ['HEAD', '/head', 'head', []],
-            ['PATCH', '/patch', 'patch', []],
-            ['POST', '/post', 'post', []],
-            ['PUT', '/put', 'put', []],
-            ['OPTIONS', '/options', 'options', []],
+            [['DELETE'], '/delete', 'delete', []],
+            [['GET'], '/get', 'get', []],
+            [['HEAD'], '/head', 'head', []],
+            [['PATCH'], '/patch', 'patch', []],
+            [['POST'], '/post', 'post', []],
+            [['PUT'], '/put', 'put', []],
+            [['OPTIONS'], '/options', 'options', []],
         ];
 
         $this->assertSame($expected, $r->routes);
@@ -53,21 +53,21 @@ class RouteCollectorTest extends TestCase
         }, ['middleware_group']);
 
         $expected = [
-            ['DELETE', '/delete', 'delete', ['middleware_delete']],
-            ['GET', '/get', 'get', ['middleware_get']],
-            ['HEAD', '/head', 'head', ['middleware_head']],
-            ['PATCH', '/patch', 'patch', ['middleware_patch']],
-            ['POST', '/post', 'post', ['middleware_post']],
-            ['PUT', '/put', 'put', ['middleware_put']],
-            ['OPTIONS', '/options', 'options', ['middleware_options']],
+            [['DELETE'], '/delete', 'delete', ['middleware_delete']],
+            [['GET'], '/get', 'get', ['middleware_get']],
+            [['HEAD'], '/head', 'head', ['middleware_head']],
+            [['PATCH'], '/patch', 'patch', ['middleware_patch']],
+            [['POST'], '/post', 'post', ['middleware_post']],
+            [['PUT'], '/put', 'put', ['middleware_put']],
+            [['OPTIONS'], '/options', 'options', ['middleware_options']],
 
-            ['DELETE', '/group-one/delete', 'delete', ['middleware_group', 'middleware_delete']],
-            ['GET', '/group-one/get', 'get', ['middleware_group', 'middleware_get']],
-            ['HEAD', '/group-one/head', 'head', ['middleware_group', 'middleware_head']],
-            ['PATCH', '/group-one/patch', 'patch', ['middleware_group', 'middleware_patch']],
-            ['POST', '/group-one/post', 'post', ['middleware_group', 'middleware_post']],
-            ['PUT', '/group-one/put', 'put', ['middleware_group', 'middleware_put']],
-            ['OPTIONS', '/group-one/options', 'options', ['middleware_group', 'middleware_options']]
+            [['DELETE'], '/group-one/delete', 'delete', ['middleware_group', 'middleware_delete']],
+            [['GET'], '/group-one/get', 'get', ['middleware_group', 'middleware_get']],
+            [['HEAD'], '/group-one/head', 'head', ['middleware_group', 'middleware_head']],
+            [['PATCH'], '/group-one/patch', 'patch', ['middleware_group', 'middleware_patch']],
+            [['POST'], '/group-one/post', 'post', ['middleware_group', 'middleware_post']],
+            [['PUT'], '/group-one/put', 'put', ['middleware_group', 'middleware_put']],
+            [['OPTIONS'], '/group-one/options', 'options', ['middleware_group', 'middleware_options']]
         ];
 
         $this->assertSame($expected, $r->routes);
@@ -84,7 +84,7 @@ class RouteCollectorTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'GET',
+                    ['GET'],
                     '/group/sub-group/sub-sub-group/get',
                     'get',
                     ['middleware_get']
@@ -106,7 +106,7 @@ class RouteCollectorTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'GET',
+                    ['GET'],
                     '/group/sub-group/sub-sub-group/get',
                     'get',
                     ['group_1', 'group_2', 'middleware_get']
@@ -127,7 +127,7 @@ class RouteCollectorTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'GET',
+                    ['GET'],
                     '/group/sub-group/sub-sub-group/get',
                     'get',
                     ['group_1', 'sub-group_1', 'sub-sub-group_1','middleware_get']
@@ -177,29 +177,29 @@ class RouteCollectorTest extends TestCase
         });
 
         $expected = [
-            ['DELETE', '/delete', 'delete', []],
-            ['GET', '/get', 'get', []],
-            ['HEAD', '/head', 'head', []],
-            ['PATCH', '/patch', 'patch', []],
-            ['POST', '/post', 'post', []],
-            ['PUT', '/put', 'put', []],
-            ['OPTIONS', '/options', 'options', []],
-            ['DELETE', '/group-one/delete', 'delete', []],
-            ['GET', '/group-one/get', 'get', []],
-            ['HEAD', '/group-one/head', 'head', []],
-            ['PATCH', '/group-one/patch', 'patch', []],
-            ['POST', '/group-one/post', 'post', []],
-            ['PUT', '/group-one/put', 'put', []],
-            ['OPTIONS', '/group-one/options', 'options', []],
-            ['DELETE', '/group-one/group-two/delete', 'delete', []],
-            ['GET', '/group-one/group-two/get', 'get', []],
-            ['HEAD', '/group-one/group-two/head', 'head', []],
-            ['PATCH', '/group-one/group-two/patch', 'patch', []],
-            ['POST', '/group-one/group-two/post', 'post', []],
-            ['PUT', '/group-one/group-two/put', 'put', []],
-            ['OPTIONS', '/group-one/group-two/options', 'options', []],
-            ['GET', '/admin-some-info', 'admin-some-info', []],
-            ['GET', '/admin-more-info', 'admin-more-info', []],
+            [['DELETE'], '/delete', 'delete', []],
+            [['GET'], '/get', 'get', []],
+            [['HEAD'], '/head', 'head', []],
+            [['PATCH'], '/patch', 'patch', []],
+            [['POST'], '/post', 'post', []],
+            [['PUT'], '/put', 'put', []],
+            [['OPTIONS'], '/options', 'options', []],
+            [['DELETE'], '/group-one/delete', 'delete', []],
+            [['GET'], '/group-one/get', 'get', []],
+            [['HEAD'], '/group-one/head', 'head', []],
+            [['PATCH'], '/group-one/patch', 'patch', []],
+            [['POST'], '/group-one/post', 'post', []],
+            [['PUT'], '/group-one/put', 'put', []],
+            [['OPTIONS'], '/group-one/options', 'options', []],
+            [['DELETE'], '/group-one/group-two/delete', 'delete', []],
+            [['GET'], '/group-one/group-two/get', 'get', []],
+            [['HEAD'], '/group-one/group-two/head', 'head', []],
+            [['PATCH'], '/group-one/group-two/patch', 'patch', []],
+            [['POST'], '/group-one/group-two/post', 'post', []],
+            [['PUT'], '/group-one/group-two/put', 'put', []],
+            [['OPTIONS'], '/group-one/group-two/options', 'options', []],
+            [['GET'], '/admin-some-info', 'admin-some-info', []],
+            [['GET'], '/admin-more-info', 'admin-more-info', []],
         ];
 
         $this->assertSame($expected, $r->routes);
@@ -214,7 +214,7 @@ class DummyRouteCollector extends RouteCollector
     {
     }
 
-    public function addRoute($httpMethod, $route, $handler, $middleware = [], $name = null)
+    public function addRoute(array $httpMethod, string $route, string $handler, array $middleware = [], ?string $name = null): void
     {
         if (!empty($this->currentMiddleware)) {
             array_unshift($middleware, ...$this->currentMiddleware);

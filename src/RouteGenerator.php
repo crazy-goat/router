@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace CrazyGoat\Router;
 
@@ -9,5 +10,5 @@ interface RouteGenerator
      * @param array $params
      * @return string
      */
-    public function pathFor($name, $params = []);
+    public function pathFor(string $name, array $params = []): string;
 }
