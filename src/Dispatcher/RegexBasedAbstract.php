@@ -25,6 +25,11 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
      */
     abstract protected function dispatchVariableRoute(array $routeData, string $uri): array;
 
+    public function setData(array $data): void
+    {
+        list($this->staticRouteMap, $this->variableRouteData, $this->namedRoutes) = $data;
+    }
+
     public function dispatch(string $httpMethod, string $uri): array
     {
         if (isset($this->staticRouteMap[$httpMethod][$uri])) {
