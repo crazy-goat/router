@@ -25,10 +25,16 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^4.8.35|~5.7",
-    "phpstan/phpstan": "^0.10.1"
+    "phpstan/phpstan": "^0.10.1",
+    "friendsofphp/php-cs-fixer": "^2.14"
   },
   "scripts": {
     "tests" : "./vendor/bin/phpunit",
-    "phpstan" : "vendor/bin/phpstan analyse --level=max src"
+    "phpstan" : "vendor/bin/phpstan analyse --level=max src",
+    "php-cs-fixer": [
+      "vendor/bin/php-cs-fixer fix ./src --using-cache=false --rules=@PSR2",
+      "vendor/bin/php-cs-fixer fix ./examples --using-cache=false --rules=@PSR2",
+      "vendor/bin/php-cs-fixer fix ./test --using-cache=false --rules=@PSR2"
+    ]
   }
 }
