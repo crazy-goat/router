@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use CrazyGoat\Router\Configuration;
 use CrazyGoat\Router\DispatcherFactory;
-use CrazyGoat\Router\Interfaces\CacheProviderInterface;
+use CrazyGoat\Router\Interfaces\CacheProvider;
 
 include '../vendor/autoload.php';
 

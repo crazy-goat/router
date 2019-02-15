@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router\Interfaces;
 
-interface CacheProviderInterface
+interface CacheProvider
 {
     public function load(): array;
 

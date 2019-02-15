@@ -7,7 +7,8 @@ use CrazyGoat\Router\DataGenerator\GroupCountBased as GroupCountCollector;
 use CrazyGoat\Router\Dispatcher\GroupCountBased as GroupCountDispatcher;
 use CrazyGoat\Router\Exceptions\CacheLoadException;
 use CrazyGoat\Router\Exceptions\RouterFileReadException;
-use CrazyGoat\Router\Interfaces\CacheProviderInterface;
+use CrazyGoat\Router\Interfaces\CacheProvider;
+use CrazyGoat\Router\Interfaces\Dispatcher;
 use CrazyGoat\Router\RouteParser\Std;
 
 final class DispatcherFactory
@@ -35,7 +36,7 @@ final class DispatcherFactory
     static public function prepareDispatcher(Configuration $config): Dispatcher
     {
         $data = null;
-        if ($config->isCacheEnabled() && $config->getCacheProvider() instanceof CacheProviderInterface) {
+        if ($config->isCacheEnabled() && $config->getCacheProvider() instanceof CacheProvider) {
             try {
                 $data = $config->getCacheProvider()->load();
             } catch (CacheLoadException $exception) {

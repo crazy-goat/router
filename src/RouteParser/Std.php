@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router\RouteParser;
 
-use CrazyGoat\Router\BadRouteException;
-use CrazyGoat\Router\RouteParser;
+use CrazyGoat\Router\Exceptions\BadRouteException;
+use CrazyGoat\Router\Interfaces\RouteParser;
 
 /**
  * Parses route strings of the following form:

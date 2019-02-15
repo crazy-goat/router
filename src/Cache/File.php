@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace CrazyGoat\Router\Cache;
 
 use CrazyGoat\Router\Exceptions\CacheSaveException;
-use CrazyGoat\Router\Interfaces\CacheProviderInterface;
+use CrazyGoat\Router\Interfaces\CacheProvider;
 
-class File implements CacheProviderInterface {
+class File implements CacheProvider {
     /**
      * @var string
      */

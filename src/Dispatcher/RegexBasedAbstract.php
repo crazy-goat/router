@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router\Dispatcher;
 
-use CrazyGoat\Router\BadRouteException;
-use CrazyGoat\Router\Dispatcher;
-use CrazyGoat\Router\RouteGenerator;
+use CrazyGoat\Router\Exceptions\BadRouteException;
+use CrazyGoat\Router\Interfaces\Dispatcher;
+use CrazyGoat\Router\Interfaces\RouteGenerator;
 
 abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
 {

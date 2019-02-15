@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router\DataGenerator;
 
-use CrazyGoat\Router\BadRouteException;
-use CrazyGoat\Router\DataGenerator;
+use CrazyGoat\Router\Exceptions\BadRouteException;
+use CrazyGoat\Router\Interfaces\DataGenerator;
 use CrazyGoat\Router\Route;
-use CrazyGoat\Router\RouteParser\Std;
 
 abstract class RegexBasedAbstract implements DataGenerator
 {

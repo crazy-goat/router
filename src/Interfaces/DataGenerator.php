@@ -1,6 +1,6 @@
 <?php
 
-namespace CrazyGoat\Router;
+namespace CrazyGoat\Router\Interfaces;
 
 interface DataGenerator
 {

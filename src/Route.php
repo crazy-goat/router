@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router;
 
+use CrazyGoat\Router\Interfaces\RouteInterface;
+
 final class Route implements RouteInterface
 {
     /** @var string */

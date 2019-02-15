@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router;
 
+use CrazyGoat\Router\Interfaces\Dispatcher;
+
 if (!function_exists('CrazyGoat\Router\simpleDispatcher')) {
     /**
      * @param \Closure $routeDefinitionCallback

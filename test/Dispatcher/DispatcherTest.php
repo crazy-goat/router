@@ -70,7 +70,7 @@ abstract class DispatcherTest extends TestCase
     }
 
     /**
-     * @expectedException \CrazyGoat\Router\BadRouteException
+     * @expectedException \CrazyGoat\Router\Exceptions\BadRouteException
      * @expectedExceptionMessage Cannot use the same placeholder "test" twice
      */
     public function testDuplicateVariableNameError()
@@ -81,7 +81,7 @@ abstract class DispatcherTest extends TestCase
     }
 
     /**
-     * @expectedException \CrazyGoat\Router\BadRouteException
+     * @expectedException \CrazyGoat\Router\Exceptions\BadRouteException
      * @expectedExceptionMessage Cannot register two routes matching "/user/([^/]+)" for method "GET"
      */
     public function testDuplicateVariableRoute()
@@ -93,7 +93,7 @@ abstract class DispatcherTest extends TestCase
     }
 
     /**
-     * @expectedException \CrazyGoat\Router\BadRouteException
+     * @expectedException \CrazyGoat\Router\Exceptions\BadRouteException
      * @expectedExceptionMessage Cannot register two routes matching "/user" for method "GET"
      */
     public function testDuplicateStaticRoute()
@@ -105,7 +105,7 @@ abstract class DispatcherTest extends TestCase
     }
 
     /**
-     * @expectedException \CrazyGoat\Router\BadRouteException
+     * @expectedException \CrazyGoat\Router\Exceptions\BadRouteException
      * @expectedExceptionMessage Static route "/user/nikic" is shadowed by previously defined variable route "/user/([^/]+)" for method "GET"
      */
     public function testShadowedStaticRoute()
@@ -117,7 +117,7 @@ abstract class DispatcherTest extends TestCase
     }
 
     /**
-     * @expectedException \CrazyGoat\Router\BadRouteException
+     * @expectedException \CrazyGoat\Router\Exceptions\BadRouteException
      * @expectedExceptionMessage Regex "(en|de)" for parameter "lang" contains a capturing group
      */
     public function testCapturing()

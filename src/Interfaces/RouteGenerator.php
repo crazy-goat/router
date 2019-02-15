@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CrazyGoat\Router;
+namespace CrazyGoat\Router\Interfaces;
 
 interface RouteGenerator
 {
