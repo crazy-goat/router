@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router\DataGenerator;
 
+use CrazyGoat\Router\Route;
+
 final class GroupCountBased extends RegexBasedAbstract
 {
     protected function getApproxChunkSize(): int
@@ -15,9 +17,10 @@ final class GroupCountBased extends RegexBasedAbstract
         $routeMap = [];
         $regexes = [];
         $numGroups = 0;
+
         /**
          * @var string $regex
-         * @var \CrazyGoat\Router\Route $route
+         * @var Route $route
          */
         foreach ($regexToRoutesMap as $regex => $route) {
             $numVariables = count($route->variables);

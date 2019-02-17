@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router\DataGenerator;
 
+use CrazyGoat\Router\Route;
+
 final class CharCountBased extends RegexBasedAbstract
 {
     protected function getApproxChunkSize(): int
@@ -18,6 +20,11 @@ final class CharCountBased extends RegexBasedAbstract
         $suffixLen = 0;
         $suffix = '';
         $count = count($regexToRoutesMap);
+
+        /**
+         * @var string $regex
+         * @var Route $route
+         */
         foreach ($regexToRoutesMap as $regex => $route) {
             $suffixLen++;
             $suffix .= "\t";

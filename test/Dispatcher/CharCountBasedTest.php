@@ -6,11 +6,11 @@ class CharCountBasedTest extends DispatcherTest
 {
     protected function getDispatcherClass()
     {
-        return 'CrazyGoat\\Router\\Dispatcher\\CharCountBased';
+        return new \CrazyGoat\Router\Dispatcher\CharCountBased();
     }
 
     protected function getDataGeneratorClass()
     {
-        return 'CrazyGoat\\Router\\DataGenerator\\CharCountBased';
+        return new \CrazyGoat\Router\DataGenerator\CharCountBased();
     }
 }

@@ -6,11 +6,11 @@ class GroupCountBasedTest extends DispatcherTest
 {
     protected function getDispatcherClass()
     {
-        return 'CrazyGoat\\Router\\Dispatcher\\GroupCountBased';
+        return new \CrazyGoat\Router\Dispatcher\GroupCountBased();
     }
 
     protected function getDataGeneratorClass()
     {
-        return 'CrazyGoat\\Router\\DataGenerator\\GroupCountBased';
+        return new \CrazyGoat\Router\DataGenerator\GroupCountBased();
     }
 }

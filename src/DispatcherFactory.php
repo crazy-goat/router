@@ -7,7 +7,6 @@ use CrazyGoat\Router\DataGenerator\GroupCountBased as GroupCountCollector;
 use CrazyGoat\Router\Dispatcher\GroupCountBased as GroupCountDispatcher;
 use CrazyGoat\Router\Exceptions\CacheLoadException;
 use CrazyGoat\Router\Exceptions\CacheNotFoundException;
-use CrazyGoat\Router\Exceptions\RouterFileReadException;
 use CrazyGoat\Router\Interfaces\CacheProvider;
 use CrazyGoat\Router\Interfaces\Dispatcher;
 use CrazyGoat\Router\Provider\ClosureProvider;
@@ -16,24 +15,24 @@ use CrazyGoat\Router\RouteParser\Std;
 
 final class DispatcherFactory
 {
-    public static function createFromClosure(\Closure $routing)
+    public static function createFromClosure(\Closure $routing, array $options = []): Dispatcher
     {
         return static::prepareDispatcher(
             new Configuration(
                 new ClosureProvider($routing),
-                static::defaultCollector(),
-                static::defaultDispatcher()
+                static::defaultCollector($options),
+                $options['dispatcher'] ?? static::defaultDispatcher()
             )
         );
     }
 
-    public static function createFileCached(string $routingFile, string $cacheFile)
+    public static function createFileCached(string $routingFile, string $cacheFile, array $options = []): Dispatcher
     {
         return static::prepareDispatcher(
             new Configuration(
                 new FileCachedProvider($routingFile, $cacheFile),
-                static::defaultCollector(),
-                static::defaultDispatcher()
+                static::defaultCollector($options),
+                $options['dispatcher'] ?? static::defaultDispatcher()
             )
         );
     }
@@ -72,13 +71,14 @@ final class DispatcherFactory
     }
 
     /**
+     * @param array $options
      * @return RouteCollector
      */
-    private static function defaultCollector(): RouteCollector
+    private static function defaultCollector(array $options = []): RouteCollector
     {
         return new RouteCollector(
-            new Std(),
-            new GroupCountCollector()
+            $options['parser'] ?? new Std(),
+            $options['generator'] ?? new GroupCountCollector()
         );
     }
 

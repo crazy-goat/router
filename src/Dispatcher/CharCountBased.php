@@ -12,15 +12,21 @@ final class CharCountBased extends RegexBasedAbstract
 
     protected function dispatchVariableRoute(array $routeData, string $uri): array
     {
+        /** @var array $data */
         foreach ($routeData as $data) {
-            if (!preg_match($data['regex'], $uri . $data['suffix'], $matches)) {
+            if (!preg_match((string)$data['regex'], $uri . (string)$data['suffix'], $matches)) {
                 continue;
             }
 
+            /**
+             * @var string $handler
+             */
             list($handler, $varNames, $middlewares) = $data['routeMap'][end($matches)];
 
             $vars = [];
             $i = 0;
+
+            /** @var string $varName */
             foreach ($varNames as $varName) {
                 $vars[$varName] = $matches[++$i];
             }

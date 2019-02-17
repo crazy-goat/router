@@ -58,9 +58,13 @@ final class FileCachedProvider implements RoutingProvider, CacheProvider
     {
         if ($this->routing === null) {
             try {
+                if (!file_exists($this->routingFile)) {
+                    throw new RouterFileReadException();
+                }
+
                 $this->routing = require $this->routingFile;
             } catch (\Throwable $exception) {
-                throw new RouterFileReadException();
+
             }
         }
         return $this->routing;

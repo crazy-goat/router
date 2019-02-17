@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../src/functions.php';
-
 spl_autoload_register(function ($class) {
     if (strpos($class, 'CrazyGoat\\Router\\') === 0) {
         $dir = strcasecmp(substr($class, -4), 'Test') ? 'src/' : 'test/';

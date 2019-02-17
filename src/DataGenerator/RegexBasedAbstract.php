@@ -9,7 +9,7 @@ use CrazyGoat\Router\Route;
 
 abstract class RegexBasedAbstract implements DataGenerator
 {
-    /** @var array */
+    /** @var array[][] */
     protected $staticRoutes = [];
 
     /** @var Route[][] */
@@ -85,6 +85,7 @@ abstract class RegexBasedAbstract implements DataGenerator
 
     private function addStaticRoute(string $httpMethod, array $routeData, string $handler, array $middlewares = [], ?string $name = null): void
     {
+        /** @var string $routeStr */
         $routeStr = $routeData[0];
 
         if (isset($this->staticRoutes[$httpMethod][$routeStr])) {
@@ -96,6 +97,7 @@ abstract class RegexBasedAbstract implements DataGenerator
         }
 
         if (isset($this->methodToRegexToRoutesMap[$httpMethod])) {
+            /** @var Route $route */
             foreach ($this->methodToRegexToRoutesMap[$httpMethod] as $route) {
                 if ($route->matches($routeStr)) {
                     throw new BadRouteException(sprintf(
@@ -110,13 +112,30 @@ abstract class RegexBasedAbstract implements DataGenerator
 
         $this->staticRoutes[$httpMethod][$routeStr] = [$handler, $middlewares];
 
-        if (!empty($name) && is_string($name)) {
+        if (!empty($name)) {
             $this->namedRoutes[$name] = $routeStr;
         }
     }
 
-    private function addVariableRoute(string $httpMethod, array $routeData, string $handler, array $middlewares = [], ?string $name = null): void
-    {
+    /**
+     * @param string $httpMethod
+     * @param array $routeData
+     * @param string $handler
+     * @param array $middlewares
+     * @param string|null $name
+     *
+     */
+    private function addVariableRoute(
+        string $httpMethod,
+        array $routeData,
+        string $handler,
+        array $middlewares = [],
+        ?string $name = null
+    ): void {
+        /**
+         * @var string $regex
+         * @var array $variables
+         */
         list($regex, $variables) = $this->buildRegexForRoute($routeData);
 
         if (isset($this->methodToRegexToRoutesMap[$httpMethod][$regex])) {
@@ -130,7 +149,7 @@ abstract class RegexBasedAbstract implements DataGenerator
 
         $this->methodToRegexToRoutesMap[$httpMethod][$regex] = $route;
 
-        if (!empty($name) && is_string($name)) {
+        if ($name != null) {
             if (!isset($this->namedRoutes[$name])) {
                 $this->namedRoutes[$name] = [];
             }
@@ -146,12 +165,17 @@ abstract class RegexBasedAbstract implements DataGenerator
     {
         $regex = '';
         $variables = [];
+        /** @var string|array $part */
         foreach ($routeData as $part) {
             if (is_string($part)) {
                 $regex .= preg_quote($part, '~');
                 continue;
             }
 
+            /**
+             * @var string $varName
+             * @var string $regexPart
+             */
             list($varName, $regexPart) = $part;
 
             if (isset($variables[$varName])) {

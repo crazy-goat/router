@@ -23,7 +23,7 @@ abstract class DispatcherTest extends TestCase
     private function generateDispatcherOptions()
     {
         return [
-            'dataGenerator' => $this->getDataGeneratorClass(),
+            'generator' => $this->getDataGeneratorClass(),
             'dispatcher' => $this->getDispatcherClass()
         ];
     }
@@ -33,7 +33,7 @@ abstract class DispatcherTest extends TestCase
      */
     public function testFoundDispatches($method, $uri, $callback, $handler, $argDict)
     {
-        $dispatcher = \CrazyGoat\Router\simpleDispatcher($callback, $this->generateDispatcherOptions());
+        $dispatcher = \CrazyGoat\Router\DispatcherFactory::createFromClosure($callback, $this->generateDispatcherOptions());
         $info = $dispatcher->dispatch($method, $uri);
         $this->assertSame($dispatcher::FOUND, $info[0]);
         $this->assertSame($handler, $info[1]);
@@ -45,7 +45,7 @@ abstract class DispatcherTest extends TestCase
      */
     public function testNotFoundDispatches($method, $uri, $callback)
     {
-        $dispatcher = \CrazyGoat\Router\simpleDispatcher($callback, $this->generateDispatcherOptions());
+        $dispatcher = \CrazyGoat\Router\DispatcherFactory::createFromClosure($callback, $this->generateDispatcherOptions());
         $routeInfo = $dispatcher->dispatch($method, $uri);
         $this->assertArrayNotHasKey(
             1,
@@ -60,7 +60,7 @@ abstract class DispatcherTest extends TestCase
      */
     public function testMethodNotAllowedDispatches($method, $uri, $callback, $availableMethods)
     {
-        $dispatcher = \CrazyGoat\Router\simpleDispatcher($callback, $this->generateDispatcherOptions());
+        $dispatcher = \CrazyGoat\Router\DispatcherFactory::createFromClosure($callback, $this->generateDispatcherOptions());
         $routeInfo = $dispatcher->dispatch($method, $uri);
         $this->assertArrayHasKey(
             1,
@@ -79,7 +79,7 @@ abstract class DispatcherTest extends TestCase
      */
     public function testDuplicateVariableNameError()
     {
-        \CrazyGoat\Router\simpleDispatcher(function (RouteCollector $r) {
+        \CrazyGoat\Router\DispatcherFactory::createFromClosure(function (RouteCollector $r) {
             $r->addRoute(['GET'], '/foo/{test}/{test:\d+}', 'handler0');
         }, $this->generateDispatcherOptions());
     }
@@ -90,7 +90,7 @@ abstract class DispatcherTest extends TestCase
      */
     public function testDuplicateVariableRoute()
     {
-        \CrazyGoat\Router\simpleDispatcher(function (RouteCollector $r) {
+        \CrazyGoat\Router\DispatcherFactory::createFromClosure(function (RouteCollector $r) {
             $r->addRoute(['GET'], '/user/{id}', 'handler0'); // oops, forgot \d+ restriction ;)
             $r->addRoute(['GET'], '/user/{name}', 'handler1');
         }, $this->generateDispatcherOptions());
@@ -102,7 +102,7 @@ abstract class DispatcherTest extends TestCase
      */
     public function testDuplicateStaticRoute()
     {
-        \CrazyGoat\Router\simpleDispatcher(function (RouteCollector $r) {
+        \CrazyGoat\Router\DispatcherFactory::createFromClosure(function (RouteCollector $r) {
             $r->addRoute(['GET'], '/user', 'handler0');
             $r->addRoute(['GET'], '/user', 'handler1');
         }, $this->generateDispatcherOptions());
@@ -114,7 +114,7 @@ abstract class DispatcherTest extends TestCase
      */
     public function testShadowedStaticRoute()
     {
-        \CrazyGoat\Router\simpleDispatcher(function (RouteCollector $r) {
+        \CrazyGoat\Router\DispatcherFactory::createFromClosure(function (RouteCollector $r) {
             $r->addRoute(['GET'], '/user/{name}', 'handler0');
             $r->addRoute(['GET'], '/user/nikic', 'handler1');
         }, $this->generateDispatcherOptions());
@@ -126,7 +126,7 @@ abstract class DispatcherTest extends TestCase
      */
     public function testCapturing()
     {
-        \CrazyGoat\Router\simpleDispatcher(function (RouteCollector $r) {
+        \CrazyGoat\Router\DispatcherFactory::createFromClosure(function (RouteCollector $r) {
             $r->addRoute(['GET'], '/{lang:(en|de)}', 'handler0');
         }, $this->generateDispatcherOptions());
     }
