@@ -7,13 +7,6 @@ use CrazyGoat\Router\Interfaces\CacheProvider;
 
 include '../vendor/autoload.php';
 
-$config = new Configuration(
-    'data/router-file.php',
-    DispatcherFactory::defaultCollector(),
-    DispatcherFactory::defaultDispatcher(),
-    new \CrazyGoat\Router\Cache\File('cache/router.cache')
-);
-
-$dispatcher = DispatcherFactory::prepareDispatcher($config);
+$dispatcher = DispatcherFactory::createFileCached('data/router-file.php', 'cache/router.cache');
 
 var_dump($dispatcher->dispatch('GET', '/users'));

@@ -30,7 +30,7 @@
   },
   "scripts": {
     "tests" : "./vendor/bin/phpunit",
-    "phpstan" : "vendor/bin/phpstan analyse --level=max src",
+    "php-stan" : "vendor/bin/phpstan analyse --level=max src",
     "php-cs-fixer": [
       "vendor/bin/php-cs-fixer fix ./src --using-cache=false --rules=@PSR2",
       "vendor/bin/php-cs-fixer fix ./examples --using-cache=false --rules=@PSR2",

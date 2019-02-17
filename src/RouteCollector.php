@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router;
 
+use CrazyGoat\Router\Exceptions\BadRouteException;
 use CrazyGoat\Router\Interfaces\DataGenerator;
 use CrazyGoat\Router\Interfaces\RouteParser;
 

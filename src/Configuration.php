@@ -5,6 +5,7 @@ namespace CrazyGoat\Router;
 
 use CrazyGoat\Router\Interfaces\CacheProvider;
 use CrazyGoat\Router\Interfaces\Dispatcher;
+use CrazyGoat\Router\Interfaces\RoutingProvider;
 
 class Configuration
 {
@@ -18,49 +19,29 @@ class Configuration
     private $dispatcher;
 
     /**
-     * @var string
+     * @var RoutingProvider
      */
-    private $routerFile;
-    /**
-     * @var CacheProvider|null
-     */
-    private $cacheProvider;
+    private $provider;
 
     /**
      * Configuration constructor.
-     * @param string $routerFile
+     * @param RoutingProvider $provider
      * @param RouteCollector $collector
      * @param Dispatcher $dispatcher
-     * @param CacheProvider|null $cacheProvider
      */
     public function __construct(
-        string $routerFile,
+        RoutingProvider $provider,
         RouteCollector $collector,
-        Dispatcher $dispatcher,
-        ?CacheProvider $cacheProvider = null
+        Dispatcher $dispatcher
     ) {
-        $this->routerFile = $routerFile;
+        $this->provider = $provider;
         $this->collector = $collector;
         $this->dispatcher = $dispatcher;
-        $this->cacheProvider = $cacheProvider;
     }
 
-    public function getCacheProvider(): ?CacheProvider
+    public function getRoutingProvider(): RoutingProvider
     {
-        return $this->cacheProvider;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRouterFile(): string
-    {
-        return $this->routerFile;
-    }
-
-    public function isCacheEnabled(): bool
-    {
-        return $this->cacheProvider instanceof CacheProvider;
+        return $this->provider;
     }
 
     /**
