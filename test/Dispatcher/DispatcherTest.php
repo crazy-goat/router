@@ -2,6 +2,8 @@
 
 namespace CrazyGoat\Router\Dispatcher;
 
+use CrazyGoat\Router\Exceptions\MethodNotAllowed;
+use CrazyGoat\Router\Exceptions\RouteNotFound;
 use CrazyGoat\Router\RouteCollector;
 use PHPUnit\Framework\TestCase;
 
@@ -35,42 +37,33 @@ abstract class DispatcherTest extends TestCase
     {
         $dispatcher = \CrazyGoat\Router\DispatcherFactory::createFromClosure($callback, $this->generateDispatcherOptions());
         $info = $dispatcher->dispatch($method, $uri);
-        $this->assertSame($dispatcher::FOUND, $info[0]);
-        $this->assertSame($handler, $info[1]);
-        $this->assertSame($argDict, $info[2]);
+        $this->assertSame($handler, $info->getHandler());
+        $this->assertSame($argDict, $info->getVariables());
     }
 
     /**
      * @dataProvider provideNotFoundDispatchCases
+     * @expectedException \CrazyGoat\Router\Exceptions\RouteNotFound
      */
     public function testNotFoundDispatches($method, $uri, $callback)
     {
         $dispatcher = \CrazyGoat\Router\DispatcherFactory::createFromClosure($callback, $this->generateDispatcherOptions());
-        $routeInfo = $dispatcher->dispatch($method, $uri);
-        $this->assertArrayNotHasKey(
-            1,
-            $routeInfo,
-            'NOT_FOUND result must only contain a single element in the returned info array'
-        );
-        $this->assertSame($dispatcher::NOT_FOUND, $routeInfo[0]);
+        $dispatcher->dispatch($method, $uri);
     }
 
     /**
      * @dataProvider provideMethodNotAllowedDispatchCases
+     * @expectedException \CrazyGoat\Router\Exceptions\MethodNotAllowed
      */
     public function testMethodNotAllowedDispatches($method, $uri, $callback, $availableMethods)
     {
         $dispatcher = \CrazyGoat\Router\DispatcherFactory::createFromClosure($callback, $this->generateDispatcherOptions());
-        $routeInfo = $dispatcher->dispatch($method, $uri);
-        $this->assertArrayHasKey(
-            1,
-            $routeInfo,
-            'METHOD_NOT_ALLOWED result must return an array of allowed methods at index 1'
-        );
-
-        list($routedStatus, $methodArray) = $dispatcher->dispatch($method, $uri);
-        $this->assertSame($dispatcher::METHOD_NOT_ALLOWED, $routedStatus);
-        $this->assertSame($availableMethods, $methodArray);
+        try {
+            $dispatcher->dispatch($method, $uri);
+        } catch (MethodNotAllowed $exception) {
+            $this->assertSame($availableMethods, $exception->getAllowedMethods());
+            throw $exception;
+        }
     }
 
     /**

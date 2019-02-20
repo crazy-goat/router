@@ -2,32 +2,19 @@ CrazyGoat\Route - Crazy router for PHP, based on FastRoute
 =======================================
 
 This library provides a fast implementation of a regular expression based router. [Blog post explaining how the
-implementation works and why it is fast.][blog_post] 
-
+implementation works and why it is fast.][blog_post]  
 This fork add these crazy functions:
  - middleware stack - add some middlewares to your route
  - route generation - for named route you can generate a path 
  - pass max phpstan - possible less bugs :P
- - `fastRoute` => `crazyRoute` compatibility - **except cache files**
-
+ 
 Install
 -------
 
 To install with composer:
 
-Add custom repository to composer.json
-```json
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/crazy-goat/CrazyRoute.git"
-        }
-    ]
-```
-next run:
-
 ```sh
-composer require nikic/fast-route
+composer require crazy-goat/router
 ```
 
 Requires PHP 7.1 or newer.
@@ -42,13 +29,15 @@ Here's a basic usage example:
 
 require '/path/to/vendor/autoload.php';
 
-$dispatcher = CrazyGoat\Router\simpleDispatcher(function(CrazyGoat\Router\RouteCollector $r) {
-    $r->addRoute('GET', '/users', 'get_all_users_handler');
+$routing = function (CrazyGoat\Router\RouteCollector $r) {
+    $r->get('/users', 'get_all_users_handler');
     // {id} must be a number (\d+)
-    $r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
+    $r->get('/user/{id:\d+}', 'get_user_handler');
     // The /{title} suffix is optional
-    $r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
-});
+    $r->get('/articles/{id:\d+}[/{title}]', 'get_article_handler');
+};
+
+$dispatcher = CrazyGoat\Router\DispatcherFactory::createFromClosure($routing);
 
 // Fetch method and URI from somewhere
 $httpMethod = $_SERVER['REQUEST_METHOD'];
@@ -60,31 +49,29 @@ if (false !== $pos = strpos($uri, '?')) {
 }
 $uri = rawurldecode($uri);
 
-$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
-switch ($routeInfo[0]) {
-    case CrazyGoat\Router\Dispatcher::NOT_FOUND:
-        // ... 404 Not Found
-        break;
-    case CrazyGoat\Router\Dispatcher::METHOD_NOT_ALLOWED:
-        $allowedMethods = $routeInfo[1];
-        // ... 405 Method Not Allowed
-        break;
-    case CrazyGoat\Router\Dispatcher::FOUND:
-        $handler = $routeInfo[1];
-        $vars = $routeInfo[2];
-        // ... call $handler with $vars
-        break;
+try {
+    $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+    
+    $handler = $routeInfo->getHandler();
+    $params = $routeInfo->getVariables();
+    $middlewareStack = $routeInfo->getMiddlewareStack();
+    
+    // ... call $handler with $vars
+} catch (\CrazyGoat\Router\Exceptions\MethodNotAllowed $exception) {
+    // ... 405 Method Not Allowed
+} catch (\CrazyGoat\Router\Exceptions\RouteNotFound $exception) {
+   // ... 404 Not Found
 }
 ```
 
 ### Defining routes
 
-The routes are defined by calling the `CrazyGoat\Router\simpleDispatcher()` function, which accepts
+The routes are defined by calling the `CrazyGoat\Router\DispatcherFactory::createFromClosure()` or  function, which accepts
 a callable taking a `CrazyGoat\Router\RouteCollector` instance. The routes are added by calling
 `addRoute()` on the collector instance:
 
 ```php
-$r->addRoute($method, $routePattern, $handler);
+$r->addRoute([$method], $routePattern, $handler);
 ```
 
 The `$method` is an uppercase HTTP method string for which a certain route should match. It
@@ -92,8 +79,8 @@ is possible to specify multiple valid methods using an array:
 
 ```php
 // These two calls
-$r->addRoute('GET', '/test', 'handler');
-$r->addRoute('POST', '/test', 'handler');
+$r->addRoute(['GET'], '/test', 'handler');
+$r->addRoute(['POST'], '/test', 'handler');
 // Are equivalent to this one call
 $r->addRoute(['GET', 'POST'], '/test', 'handler');
 ```
@@ -104,13 +91,13 @@ a custom pattern by writing `{bar:[0-9]+}`. Some examples:
 
 ```php
 // Matches /user/42, but not /user/xyz
-$r->addRoute('GET', '/user/{id:\d+}', 'handler');
+$r->addRoute(['GET'], '/user/{id:\d+}', 'handler');
 
 // Matches /user/foobar, but not /user/foo/bar
-$r->addRoute('GET', '/user/{name}', 'handler');
+$r->addRoute(['GET'], '/user/{name}', 'handler');
 
 // Matches /user/foo/bar as well
-$r->addRoute('GET', '/user/{name:.+}', 'handler');
+$r->addRoute(['GET'], '/user/{name:.+}', 'handler');
 ```
 
 Custom patterns for route placeholders cannot use capturing groups. For example `{lang:(en|de)}`
@@ -123,16 +110,16 @@ not in the middle of a route.
 
 ```php
 // This route
-$r->addRoute('GET', '/user/{id:\d+}[/{name}]', 'handler');
+$r->addRoute(['GET'], '/user/{id:\d+}[/{name}]', 'handler');
 // Is equivalent to these two routes
-$r->addRoute('GET', '/user/{id:\d+}', 'handler');
-$r->addRoute('GET', '/user/{id:\d+}/{name}', 'handler');
+$r->addRoute(['GET'], '/user/{id:\d+}', 'handler');
+$r->addRoute(['GET'], '/user/{id:\d+}/{name}', 'handler');
 
 // Multiple nested optional parts are possible as well
-$r->addRoute('GET', '/user[/{id:\d+}[/{name}]]', 'handler');
+$r->addRoute(['GET'], '/user[/{id:\d+}[/{name}]]', 'handler');
 
 // This route is NOT valid, because optional parts can only occur at the end
-$r->addRoute('GET', '/user[/{id:\d+}]/{name}', 'handler');
+$r->addRoute(['GET'], '/user[/{id:\d+}]/{name}', 'handler');
 ```
 
 The `$handler` parameter does not necessarily have to be a callback, it could also be a controller
@@ -163,18 +150,18 @@ For example, defining your routes as:
 
 ```php
 $r->addGroup('/admin', function (RouteCollector $r) {
-    $r->addRoute('GET', '/do-something', 'handler');
-    $r->addRoute('GET', '/do-another-thing', 'handler');
-    $r->addRoute('GET', '/do-something-else', 'handler');
+    $r->addRoute(['GET'], '/do-something', 'handler');
+    $r->addRoute(['GET'], '/do-another-thing', 'handler');
+    $r->addRoute(['GET'], '/do-something-else', 'handler');
 });
 ```
 
 Will have the same result as:
 
  ```php
-$r->addRoute('GET', '/admin/do-something', 'handler');
-$r->addRoute('GET', '/admin/do-another-thing', 'handler');
-$r->addRoute('GET', '/admin/do-something-else', 'handler');
+$r->addRoute(['GET'], '/admin/do-something', 'handler');
+$r->addRoute(['GET'], '/admin/do-another-thing', 'handler');
+$r->addRoute(['GET'], '/admin/do-something-else', 'handler');
  ```
 
 Nested groups are also supported, in which case the prefixes of all the nested groups are combined.
@@ -189,9 +176,9 @@ routing data and construct the dispatcher from the cached information:
 <?php
 
 $dispatcher = CrazyGoat\Router\cachedDispatcher(function(CrazyGoat\Router\RouteCollector $r) {
-    $r->addRoute('GET', '/user/{name}/{id:[0-9]+}', 'handler0');
-    $r->addRoute('GET', '/user/{id:[0-9]+}', 'handler1');
-    $r->addRoute('GET', '/user/{name}', 'handler2');
+    $r->addRoute(['GET'], '/user/{name}/{id:[0-9]+}', 'handler0');
+    $r->addRoute(['GET'], '/user/{id:[0-9]+}', 'handler1');
+    $r->addRoute(['GET'], '/user/{name}', 'handler2');
 }, [
     'cacheFile' => __DIR__ . '/route.cache', /* required */
     'cacheDisabled' => IS_DEBUG_ENABLED,     /* optional, enabled by default */

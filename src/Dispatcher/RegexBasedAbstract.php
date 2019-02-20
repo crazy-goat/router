@@ -4,8 +4,11 @@ declare(strict_types=1);
 namespace CrazyGoat\Router\Dispatcher;
 
 use CrazyGoat\Router\Exceptions\BadRouteException;
+use CrazyGoat\Router\Exceptions\MethodNotAllowed;
+use CrazyGoat\Router\Exceptions\RouteNotFound;
 use CrazyGoat\Router\Interfaces\Dispatcher;
 use CrazyGoat\Router\Interfaces\RouteGenerator;
+use CrazyGoat\Router\RouteInfo;
 
 abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
 {
@@ -30,18 +33,25 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
         list($this->staticRouteMap, $this->variableRouteData, $this->namedRoutes) = $data;
     }
 
-    public function dispatch(string $httpMethod, string $uri): array
+    /**
+     * @param string $httpMethod
+     * @param string $uri
+     * @return RouteInfo
+     * @throws MethodNotAllowed
+     * @throws RouteNotFound
+     */
+    public function dispatch(string $httpMethod, string $uri): RouteInfo
     {
         if (isset($this->staticRouteMap[$httpMethod][$uri])) {
             list($handler, $middleware) = $this->staticRouteMap[$httpMethod][$uri];
-            return [self::FOUND, $handler, [], $middleware];
+            return new RouteInfo([self::FOUND, $handler, [], $middleware]);
         }
 
         $varRouteData = $this->variableRouteData;
         if (isset($varRouteData[$httpMethod])) {
             $result = $this->dispatchVariableRoute($varRouteData[$httpMethod], $uri);
             if ($result[0] === self::FOUND) {
-                return $result;
+                return new RouteInfo($result);
             }
         }
 
@@ -49,12 +59,12 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
         if ($httpMethod === 'HEAD') {
             if (isset($this->staticRouteMap['GET'][$uri])) {
                 list($handler, $middleware) = $this->staticRouteMap['GET'][$uri];
-                return [self::FOUND, $handler, [], $middleware];
+                return new RouteInfo([self::FOUND, $handler, [], $middleware]);
             }
             if (isset($varRouteData['GET'])) {
                 $result = $this->dispatchVariableRoute($varRouteData['GET'], $uri);
                 if ($result[0] === self::FOUND) {
-                    return $result;
+                    return new RouteInfo($result);
                 }
             }
         }
@@ -62,12 +72,12 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
         // If nothing else matches, try fallback routes
         if (isset($this->staticRouteMap['*'][$uri])) {
             list($handler, $middleware) = $this->staticRouteMap['*'][$uri];
-            return [self::FOUND, $handler, [], $middleware];
+            return new RouteInfo([self::FOUND, $handler, [], $middleware]);
         }
         if (isset($varRouteData['*'])) {
             $result = $this->dispatchVariableRoute($varRouteData['*'], $uri);
             if ($result[0] === self::FOUND) {
-                return $result;
+                return new RouteInfo($result);
             }
         }
 
@@ -93,10 +103,10 @@ abstract class RegexBasedAbstract implements Dispatcher, RouteGenerator
 
         // If there are no allowed methods the route simply does not exist
         if ($allowedMethods) {
-            return [self::METHOD_NOT_ALLOWED, $allowedMethods];
+            throw new MethodNotAllowed($httpMethod, $allowedMethods);
         }
 
-        return [self::NOT_FOUND];
+        throw new RouteNotFound();
     }
 
     /**

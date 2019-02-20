@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace CrazyGoat\Router\Interfaces;
 
+use CrazyGoat\Router\Exceptions\MethodNotAllowed;
+use CrazyGoat\Router\Exceptions\RouteNotFound;
+use CrazyGoat\Router\RouteInfo;
+
 interface Dispatcher
 {
     const NOT_FOUND = 0;
@@ -21,9 +25,12 @@ interface Dispatcher
      * @param string $httpMethod
      * @param string $uri
      *
-     * @return array
+     * @throws RouteNotFound
+     * @throws MethodNotAllowed
+     *
+     * @return RouteInfo
      */
-    public function dispatch(string $httpMethod, string $uri): array;
+    public function dispatch(string $httpMethod, string $uri): RouteInfo;
 
     public function setData(array $data): void;
 }

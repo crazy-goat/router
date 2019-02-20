@@ -17,14 +17,14 @@ final class GroupCountBased extends RegexBasedAbstract
                 continue;
             }
 
-            list($handler, $varNames, $middlewares) = $data['routeMap'][count($matches)];
+            list($handler, $varNames, $middlewareStack) = $data['routeMap'][count($matches)];
 
             $vars = [];
             $i = 0;
             foreach ($varNames as $varName) {
                 $vars[$varName] = $matches[++$i];
             }
-            return [self::FOUND, $handler, $vars, $middlewares];
+            return [self::FOUND, $handler, $vars, $middlewareStack];
         }
 
         return [self::NOT_FOUND];

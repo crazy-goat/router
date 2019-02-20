@@ -21,7 +21,7 @@ final class CharCountBased extends RegexBasedAbstract
             /**
              * @var string $handler
              */
-            list($handler, $varNames, $middlewares) = $data['routeMap'][end($matches)];
+            list($handler, $varNames, $middlewareStack) = $data['routeMap'][end($matches)];
 
             $vars = [];
             $i = 0;
@@ -30,7 +30,7 @@ final class CharCountBased extends RegexBasedAbstract
             foreach ($varNames as $varName) {
                 $vars[$varName] = $matches[++$i];
             }
-            return [self::FOUND, $handler, $vars, $middlewares];
+            return [self::FOUND, $handler, $vars, $middlewareStack];
         }
 
         return [self::NOT_FOUND];
