@@ -44,10 +44,12 @@ final class DispatcherFactory
     public static function prepareDispatcher(Configuration $config): Dispatcher
     {
         $data = null;
+        $fromCache = false;
         $cacheProvider = $config->getRoutingProvider();
         if ($cacheProvider instanceof CacheProvider) {
             try {
                 $data = $cacheProvider->load();
+                $fromCache = true;
             } catch (CacheLoadException | CacheNotFoundException $exception) {
                 $data = null;
             }
@@ -63,7 +65,7 @@ final class DispatcherFactory
         $dispatcher = $config->getDispatcher();
         $dispatcher->setData($data);
 
-        if ($cacheProvider instanceof CacheProvider) {
+        if ($cacheProvider instanceof CacheProvider && $fromCache === false) {
             $cacheProvider->save($data);
         }
 
