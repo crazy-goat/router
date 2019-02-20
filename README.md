@@ -168,25 +168,28 @@ Nested groups are also supported, in which case the prefixes of all the nested g
 
 ### Caching
 
-The reason `simpleDispatcher` accepts a callback for defining the routes is to allow seamless
-caching. By using `cachedDispatcher` instead of `simpleDispatcher` you can cache the generated
+By using `cachedDispatcher` instead of `simpleDispatcher` you can cache the generated
 routing data and construct the dispatcher from the cached information:
 
 ```php
 <?php
+$dispatcher = DispatcherFactory::createFileCached('data/router-file.php', 'cache/router.cache');
+```
+First parameter is the file consist routing definitions. This file should return `Closure` with routing definition:
 
-$dispatcher = CrazyGoat\Router\cachedDispatcher(function(CrazyGoat\Router\RouteCollector $r) {
-    $r->addRoute(['GET'], '/user/{name}/{id:[0-9]+}', 'handler0');
-    $r->addRoute(['GET'], '/user/{id:[0-9]+}', 'handler1');
-    $r->addRoute(['GET'], '/user/{name}', 'handler2');
-}, [
-    'cacheFile' => __DIR__ . '/route.cache', /* required */
-    'cacheDisabled' => IS_DEBUG_ENABLED,     /* optional, enabled by default */
-]);
+```php
+<?php
+return function (CrazyGoat\Router\RouteCollector $r) {
+    $r->get('/users', 'get_all_users_handler');
+    // {id} must be a number (\d+)
+    $r->get('/user/{id:\d+}', 'get_user_handler');
+    // The /{title} suffix is optional
+    $r->get('/articles/{id:\d+}[/{title}]', 'get_article_handler');
+};
 ```
 
-The second parameter to the function is an options array, which can be used to specify the cache
-file location, among other things.
+The second parameter is the path for file cache file. If cache file not exists, routing data is loaded from
+first parameter. 
 
 ### Dispatching a URI
 
@@ -194,23 +197,35 @@ A URI is dispatched by calling the `dispatch()` method of the created dispatcher
 accepts the HTTP method and a URI. Getting those two bits of information (and normalizing them
 appropriately) is your job - this library is not bound to the PHP web SAPIs.
 
-The `dispatch()` method returns an array whose first element contains a status code. It is one
-of `Dispatcher::NOT_FOUND`, `Dispatcher::METHOD_NOT_ALLOWED` and `Dispatcher::FOUND`. For the
-method not allowed status the second array element contains a list of HTTP methods allowed for
-the supplied URI. For example:
+The `dispatch()` method returns an `RouteInfo` object which contains information about handler, variables and middleware stack. 
+If none route match request uri the `RouteNotFound` exceptions is thrown.
+If route is found but method does not match request method the `MethodNotAllowed` exceptions will be thrown. You can
+get allowed methods from exceptions using calling `getAllowedMethods()` function.
 
-    [CrazyGoat\Router\Dispatcher::METHOD_NOT_ALLOWED, ['GET', 'POST']]
+```php
+<?php
+try {
+    $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+    // ... your code 
+} catch (\CrazyGoat\Router\Exceptions\MethodNotAllowed $exception) {
+    $allowedMethods = $exception->getAllowedMethods();
+}
+```
 
 > **NOTE:** The HTTP specification requires that a `405 Method Not Allowed` response include the
 `Allow:` header to detail available methods for the requested resource. Applications using CrazyGoat\Router
-should use the second array element to add this header when relaying a 405 response.
+should use the array from `getAllowedMethods()` to add this header when relaying a 405 response.
 
-For the found status the second array element is the handler that was associated with the route
-and the third array element is a dictionary of placeholder names to their values. For example:
+For the found status the `RouteInfo` object contains handler that was associated with the route,
+dictionary of placeholder names to their values and the middleware stack. For example:
 
-    /* Routing against GET /user/nikic/42 */
-
-    [CrazyGoat\Router\Dispatcher::FOUND, 'handler0', ['name' => 'nikic', 'id' => '42']]
+```php
+$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+    
+$handler = $routeInfo->getHandler();
+$params = $routeInfo->getVariables();
+$middlewareStack = $routeInfo->getMiddlewareStack();
+```
 
 ### Overriding the route parser and dispatcher
 
@@ -223,18 +238,20 @@ dispatcher. The three components adhere to the following interfaces:
 namespace CrazyGoat\Router;
 
 interface RouteParser {
-    public function parse($route);
+    public function parse(string $route): array;
 }
 
 interface DataGenerator {
-    public function addRoute($httpMethod, $routeData, $handler);
-    public function getData();
+    public function addRoute(string $httpMethod, array $routeData, string $handler, array $middleware = [], ?string $name = null): void;
+    public function getData(): array;
+    public function hasNamedRoute(string $name): bool;
 }
 
 interface Dispatcher {
     const NOT_FOUND = 0, FOUND = 1, METHOD_NOT_ALLOWED = 2;
 
-    public function dispatch($httpMethod, $uri);
+    public function dispatch(string $httpMethod, string $uri): RouteInfo;
+    public function setData(array $data): void;
 }
 ```
 
@@ -260,7 +277,7 @@ been added the `getData()` of the generator is invoked, which returns all the ro
 by the dispatcher. The format of this data is not further specified - it is tightly coupled to
 the corresponding dispatcher.
 
-The dispatcher accepts the routing data via a constructor and provides a `dispatch()` method, which
+The dispatcher accepts the routing data via a constructor or `setData` function and provides a `dispatch()` method, which
 you're already familiar with.
 
 The route parser can be overwritten individually (to make use of some different pattern syntax),
@@ -269,53 +286,50 @@ the former is tightly coupled to the input of the latter. The reason the generat
 dispatcher are separate is that only the latter is needed when using caching (as the output of
 the former is what is being cached.)
 
-When using the `simpleDispatcher` / `cachedDispatcher` functions from above the override happens
-through the options array:
+To use custom parser, generator or dispatcher create new `Configuration` object and pass it to 
+`DispatcherFactory::prepareDispatcher()` function:
 
 ```php
 <?php
 
-$dispatcher = CrazyGoat\Router\simpleDispatcher(function(CrazyGoat\Router\RouteCollector $r) {
-    /* ... */
-}, [
-    'routeParser' => 'CrazyGoat\\Router\\RouteParser\\Std',
-    'dataGenerator' => 'CrazyGoat\\Router\\DataGenerator\\GroupCountBased',
-    'dispatcher' => 'CrazyGoat\\Router\\Dispatcher\\GroupCountBased',
-]);
+$config = new Configuration(
+    new ClosureProvider($routingData),
+    new RouteCollector(
+        new CustomParser(),
+        New CustomDataGenerator()
+    ),
+    new CustomDispatcher()       
+);
 ```
-
-The above options array corresponds to the defaults. By replacing `GroupCountBased` by
-`GroupPosBased` you could switch to a different dispatching strategy.
-
 ### Middleware
 
 Adding middleware to route is very simple, just pass `middleware` paramter to `addRoute()` or `addGroup()` method in `RouteCollecotr`.
 
 ```php
-$dispatcher = CrazyGoat\Router\simpleDispatcher(function(CrazyGoat\Router\RouteCollector $r) {
-    $r->addRoute('GET', '/users', 'get_all_users_handler', ['root_middleware']);
+$dispatcher = DispatcherFactory::createFromClosure(function(CrazyGoat\Router\RouteCollector $r) {
+    $r->addRoute(['GET'], '/users', 'get_all_users_handler', ['root_middleware']);
     $r->addGroup('/nested', function (CrazyGoat\Router\RouteCollector $r) {
-        $r->addRoute('GET', '/users', 'handler3', ['nested-middleware']);
+        $r->addRoute(['GET'], '/users', 'handler3', ['nested-middleware']);
     }, ['group_middleware']);
 });
 ```
 
-For first route `/users` only `root_middleware` will be returned. For nested routes like `/nested/users` both middleware 
+For the first route `/users` only `root_middleware` will be returned. For nested routes like `/nested/users` both middleware 
 `group_middleware` and  `nested-middleware` will be returned. You can also add more than one middleware to route:
 
 ```php
-    $r->addRoute('GET', '/users', 'get_all_users_handler', ['first', 'second']);
+    $r->addRoute(['GET'], '/users', 'get_all_users_handler', ['first', 'second']);
 ```
 
 Middleware stack is returned in `routeInfo` third index. If no middlewares where added to route an empty array will be returned.
 
 ```php
-$r->addRoute('GET', '/users', 'get_all_users_handler', ['first', 'second']);
+$r->addRoute(['GET'], '/users', 'get_all_users_handler', ['first', 'second']);
 
 //some usefull code
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
-$middlewares = $routeInfo[3]
+$middlewares = $routeInfo->getMiddlewareStack();
 ``` 
 
 ### Named routes and path generation
@@ -325,7 +339,7 @@ fifth parameter in `addRoute()` function. Route name must be unique else an exce
 Now all we have to do is call `produce()` function on `Dispatcher` object. 
 
 ```php
-$r->addRoute('GET', '/users', 'get_all_users_handler', [], 'users');
+$r->addRoute(['GET'], '/users', 'get_all_users_handler', [], 'users');
 
 // some crazy code
 
@@ -352,13 +366,13 @@ Finally, note that applications MAY always specify their own HEAD method route f
 resource to bypass this behavior entirely.
 
 ### Credits
-
-This library is based on a router that [Levi Morrison][levi] implemented for the Aerys server.
+This library is based on a FastRoute developed by [Nikita Popov][nikic].
 
 A large number of tests, as well as HTTP compliance considerations, were provided by [Daniel Lowrey][rdlowrey].
 
 
 [2616-511]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1.1 "RFC 2616 Section 5.1.1"
 [blog_post]: http://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
-[levi]: https://github.com/morrisonlevi
+[nikic]: https://github.com/nikic/FastRoute
 [rdlowrey]: https://github.com/rdlowrey
+
